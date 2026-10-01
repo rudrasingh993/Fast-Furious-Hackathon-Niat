@@ -46,6 +46,7 @@ export function createApp() {
 
   // Mount API routes
   app.use('/api', apiRouter);
+  app.use('/', apiRouter);
 
   // Error handling middleware
   app.use(errorHandler);

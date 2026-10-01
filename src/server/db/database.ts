@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/env.js';
@@ -58,21 +59,38 @@ class LocalDatabase {
   private data: DatabaseSchema;
 
   constructor() {
-    const dataDir = path.resolve(process.cwd(), '.data');
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    this.data = { ...initialDb };
+
+    // Select suitable directory: try cwd, fallback to tmpdir (for Vercel serverless / AWS Lambda)
+    let dataDir = path.resolve(process.cwd(), '.data');
+    let canWrite = false;
+    try {
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
+      canWrite = true;
+    } catch {
+      dataDir = path.join(os.tmpdir(), 'multi_mind_data');
+      try {
+        if (!fs.existsSync(dataDir)) {
+          fs.mkdirSync(dataDir, { recursive: true });
+        }
+        canWrite = true;
+      } catch (err) {
+        console.warn('⚠️ Read-only filesystem detected, running in-memory storage fallback:', err);
+      }
     }
+
     this.dbPath = path.join(dataDir, 'db.json');
-    if (fs.existsSync(this.dbPath)) {
+
+    if (canWrite && fs.existsSync(this.dbPath)) {
       try {
         const raw = fs.readFileSync(this.dbPath, 'utf8');
         this.data = { ...initialDb, ...JSON.parse(raw) };
       } catch {
-        this.data = { ...initialDb };
         this.save();
       }
-    } else {
-      this.data = { ...initialDb };
+    } else if (canWrite) {
       this.save();
     }
   }
@@ -80,8 +98,14 @@ class LocalDatabase {
   private save() {
     try {
       fs.writeFileSync(this.dbPath, JSON.stringify(this.data, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Failed to write local database:', err);
+    } catch {
+      try {
+        const tmpPath = path.join(os.tmpdir(), 'multi_mind_db.json');
+        this.dbPath = tmpPath;
+        fs.writeFileSync(tmpPath, JSON.stringify(this.data, null, 2), 'utf8');
+      } catch {
+        // Safe in-memory fallback
+      }
     }
   }
 

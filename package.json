@@ -1,14 +1,14 @@
 {
-  "name": "mosaic-ai",
+  "name": "multi-mind-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "Mosaic AI - Multimodal AI Knowledge, Research & Personal Assistant",
+  "description": "Multi Mind AI - Multimodal AI Knowledge, Research & Personal Assistant",
   "type": "module",
   "scripts": {
     "dev": "concurrently -k -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm run server:dev\" \"npm run client:dev\"",
     "client:dev": "vite",
     "server:dev": "tsx watch src/server/dev.ts",
-    "build": "vite build && tsc -p tsconfig.server.json",
+    "build": "vite build",
     "build:client": "vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "start": "node dist/server/dev.js",
