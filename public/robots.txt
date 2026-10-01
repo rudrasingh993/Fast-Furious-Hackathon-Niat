@@ -1,0 +1,9 @@
+# robots.txt for Multi Mind AI
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Disallow: /api/
+Disallow: /app/
+
+Sitemap: https://multi-mind-ai-phi.vercel.app/sitemap.xml

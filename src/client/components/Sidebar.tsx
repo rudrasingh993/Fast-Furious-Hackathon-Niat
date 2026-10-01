@@ -91,9 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
           onClick={onCloseMobile}
           className="flex items-center gap-2.5 font-bold text-base text-white tracking-tight hover:opacity-90 transition-opacity"
         >
-          <div className="w-7 h-7 rounded-full bg-gradient-to-b from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-white shadow-inner">
-            <Brain className="w-3.5 h-3.5 text-white/90" />
-          </div>
+          <img src="/logo.svg" alt="Multi Mind AI" className="w-7 h-7 rounded-full shadow-inner border border-white/10" />
           <span>Multi Mind AI</span>
         </NavLink>
       </div>

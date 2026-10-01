@@ -131,9 +131,7 @@ export const SignupPage: React.FC = () => {
 
       {/* Header Logo */}
       <Link to="/" className="flex items-center gap-2.5 font-bold text-lg text-white tracking-tight mb-8 relative z-10 group">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-b from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-white shadow-inner group-hover:border-white/30 transition-colors">
-          <Brain className="w-4 h-4 text-white/90" />
-        </div>
+        <img src="/logo.svg" alt="Multi Mind AI" className="w-8 h-8 rounded-full border border-white/15 shadow-inner group-hover:border-white/30 transition-colors" />
         <span>Multi Mind AI</span>
       </Link>
 

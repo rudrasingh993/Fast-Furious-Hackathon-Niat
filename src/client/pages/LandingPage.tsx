@@ -69,9 +69,7 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-6xl mx-auto h-14 rounded-full bg-[#0D0D0D]/75 backdrop-blur-xl border border-white/[0.08] shadow-2xl px-4 sm:px-6 flex items-center justify-between transition-all">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-b from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-white shadow-inner group-hover:border-white/30 transition-colors">
-              <Brain className="w-3.5 h-3.5 text-white/90" />
-            </div>
+            <img src="/logo.svg" alt="Multi Mind AI" className="w-7 h-7 rounded-full border border-white/15 shadow-inner group-hover:border-white/30 transition-colors" />
             <span className="font-semibold text-sm tracking-tight text-white/95">
               Multi Mind AI
             </span>
@@ -995,10 +993,8 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand Column */}
           <div className="col-span-2 space-y-3">
-            <div className="flex items-center gap-2 text-white font-semibold text-sm">
-              <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white">
-                <Brain className="w-3 h-3" />
-              </div>
+            <div className="flex items-center gap-2.5 text-white font-semibold text-sm">
+              <img src="/logo.svg" alt="Multi Mind AI" className="w-6 h-6 rounded-full border border-white/20" />
               <span>Multi Mind AI</span>
             </div>
             <p className="text-[11px] text-neutral-400 max-w-xs leading-relaxed">
