@@ -2,8 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import type { User } from '../../shared/types.js';
 
-import { saveAccountToStorage } from '../components/AccountChooserModal.js';
-
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -23,6 +21,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     async function initAuth() {
+      // 1. Detect OAuth access_token from Supabase / Google redirect hash
+      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token')) {
+        try {
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          if (accessToken) {
+            const payloadBase64 = accessToken.split('.')[1];
+            const jsonStr = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
+            const payload = JSON.parse(jsonStr);
+            const email = payload.email || payload.user_metadata?.email;
+            const name = payload.user_metadata?.full_name || payload.user_metadata?.name || email?.split('@')[0];
+            const avatarUrl = payload.user_metadata?.avatar_url;
+
+            if (email) {
+              const res = await api.googleAuth({ email, name, avatarUrl });
+              if (res.success && res.data?.user) {
+                setUser(res.data.user);
+                window.history.replaceState(null, '', window.location.pathname);
+                setLoading(false);
+                return;
+              }
+            }
+          }
+        } catch (err) {
+          console.error('Failed to parse OAuth redirect hash:', err);
+        }
+      }
+
       if (api.isAuthenticated()) {
         try {
           const res = await api.getMe();
@@ -45,12 +71,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.login({ email, password });
       if (res.success && res.data?.user) {
         setUser(res.data.user);
-        saveAccountToStorage({
-          email: res.data.user.email,
-          name: res.data.user.name,
-          avatarUrl: (res.data.user as any).avatar_url,
-          provider: 'email',
-        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Login failed' };
@@ -64,12 +84,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.signup({ name, email, password });
       if (res.success && res.data?.user) {
         setUser(res.data.user);
-        saveAccountToStorage({
-          email: res.data.user.email,
-          name: res.data.user.name,
-          avatarUrl: (res.data.user as any).avatar_url,
-          provider: 'email',
-        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Signup failed' };
@@ -83,12 +97,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.verifyOtp(type, target, code, name);
       if (res.success && res.data?.user) {
         setUser(res.data.user);
-        saveAccountToStorage({
-          email: res.data.user.email,
-          name: res.data.user.name,
-          avatarUrl: (res.data.user as any).avatar_url,
-          provider: 'email',
-        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Verification failed' };
@@ -102,12 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.googleAuth(profile);
       if (res.success && res.data?.user) {
         setUser(res.data.user);
-        saveAccountToStorage({
-          email: res.data.user.email,
-          name: res.data.user.name,
-          avatarUrl: (res.data.user as any).avatar_url,
-          provider: 'google',
-        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Google authentication failed' };

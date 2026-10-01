@@ -46,7 +46,31 @@ export function createApp() {
 
   // Mount API routes
   app.use('/api', apiRouter);
-  app.use('/', apiRouter);
+
+  // Serve compiled frontend files if dist exists
+  const distPath = path.resolve(process.cwd(), 'dist');
+  app.use(express.static(distPath));
+
+  // SPA fallback for all web page requests (e.g. OAuth redirects with #access_token)
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    const indexPath = path.join(distPath, 'index.html');
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        // Fallback for dev mode where Vite might be on port 5173
+        res.send(`<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Multi Mind AI - Connecting</title></head>
+<body style="background:#070b12;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;">
+  <p>Connecting to Multi Mind AI...</p>
+  <script>
+    window.location.replace('${config.frontendUrl}' + window.location.pathname + window.location.search + window.location.hash);
+  </script>
+</body>
+</html>`);
+      }
+    });
+  });
 
   // Error handling middleware
   app.use(errorHandler);
