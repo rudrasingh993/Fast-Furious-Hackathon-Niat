@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Brain,
@@ -10,9 +10,36 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
+  ShieldCheck,
+  ShieldAlert,
+  ShieldX,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { api } from '../api/client.js';
+
+// Password strength meter
+function getPasswordStrength(pw: string): {
+  score: number;
+  label: string;
+  color: string;
+  checks: { label: string; passed: boolean }[];
+} {
+  const checks = [
+    { label: '8+ characters', passed: pw.length >= 8 },
+    { label: 'Uppercase letter', passed: /[A-Z]/.test(pw) },
+    { label: 'Lowercase letter', passed: /[a-z]/.test(pw) },
+    { label: 'Number', passed: /[0-9]/.test(pw) },
+    { label: 'Special character', passed: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(pw) },
+  ];
+
+  const score = checks.filter((c) => c.passed).length;
+
+  if (score <= 1) return { score, label: 'Very Weak', color: 'bg-red-500', checks };
+  if (score === 2) return { score, label: 'Weak', color: 'bg-orange-500', checks };
+  if (score === 3) return { score, label: 'Fair', color: 'bg-yellow-500', checks };
+  if (score === 4) return { score, label: 'Strong', color: 'bg-emerald-500', checks };
+  return { score, label: 'Very Strong', color: 'bg-green-400', checks };
+}
 
 export const SignupPage: React.FC = () => {
   const [authMode, setAuthMode] = useState<'password' | 'email_otp'>('password');
@@ -22,13 +49,14 @@ export const SignupPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { signup, loginWithOtp } = useAuth();
   const navigate = useNavigate();
+
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
 
   // 1. Password Signup
   const handlePasswordSignup = async (e: React.FormEvent) => {
@@ -38,8 +66,9 @@ export const SignupPage: React.FC = () => {
       setError('Please fill in all required fields.');
       return;
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+    if (strength.score < 4) {
+      const missing = strength.checks.filter((c) => !c.passed).map((c) => c.label);
+      setError(`Password is too weak. Missing: ${missing.join(', ')}`);
       return;
     }
     if (password !== confirmPassword) {
@@ -76,9 +105,6 @@ export const SignupPage: React.FC = () => {
       if (res.success && res.data) {
         setOtpSent(true);
         setInfo(res.data.message);
-        if (res.data.devCode) {
-          setDevCode(res.data.devCode);
-        }
       } else {
         setError(res.error?.message || 'Could not send verification code.');
       }
@@ -224,15 +250,6 @@ export const SignupPage: React.FC = () => {
           </div>
         )}
 
-        {devCode && (
-          <div className="p-2.5 mb-4 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-300 text-[11px] flex items-center justify-between">
-            <span>Demo Verification Code:</span>
-            <span className="font-mono font-bold tracking-widest text-white bg-brand-600/40 px-2 py-0.5 rounded">
-              {devCode}
-            </span>
-          </div>
-        )}
-
         {/* 1. Tab: Email + Password */}
         {authMode === 'password' && (
           <form onSubmit={handlePasswordSignup} className="space-y-3.5">
@@ -273,7 +290,7 @@ export const SignupPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password (8+ chars)</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <Lock className="w-4 h-4" />
@@ -288,6 +305,45 @@ export const SignupPage: React.FC = () => {
                   className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs placeholder-slate-500 focus:outline-none"
                 />
               </div>
+
+              {/* Password Strength Indicator */}
+              {password.length > 0 && (
+                <div className="mt-2 space-y-1.5">
+                  {/* Strength bar */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${strength.color}`}
+                        style={{ width: `${(strength.score / 5) * 100}%` }}
+                      />
+                    </div>
+                    <span className={`text-[10px] font-medium ${
+                      strength.score <= 2 ? 'text-red-400' : strength.score <= 3 ? 'text-yellow-400' : 'text-emerald-400'
+                    }`}>
+                      {strength.label}
+                    </span>
+                  </div>
+
+                  {/* Requirements checklist */}
+                  <div className="grid grid-cols-2 gap-0.5">
+                    {strength.checks.map((check) => (
+                      <div
+                        key={check.label}
+                        className={`flex items-center gap-1 text-[10px] ${
+                          check.passed ? 'text-emerald-400' : 'text-slate-500'
+                        }`}
+                      >
+                        {check.passed ? (
+                          <CheckCircle2 className="w-3 h-3" />
+                        ) : (
+                          <div className="w-3 h-3 rounded-full border border-slate-600" />
+                        )}
+                        <span>{check.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -306,6 +362,16 @@ export const SignupPage: React.FC = () => {
                   className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs placeholder-slate-500 focus:outline-none"
                 />
               </div>
+              {confirmPassword && password !== confirmPassword && (
+                <p className="mt-1 text-[10px] text-red-400 flex items-center gap-1">
+                  <ShieldX className="w-3 h-3" /> Passwords do not match
+                </p>
+              )}
+              {confirmPassword && password === confirmPassword && password.length > 0 && (
+                <p className="mt-1 text-[10px] text-emerald-400 flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3" /> Passwords match
+                </p>
+              )}
             </div>
 
             <button

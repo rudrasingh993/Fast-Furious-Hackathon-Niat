@@ -14,6 +14,29 @@ export class AuthService {
     return bcrypt.compare(password, hash);
   }
 
+  // Password strength validation
+  validatePasswordStrength(password: string): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    if (password.length < 8) {
+      errors.push('Password must be at least 8 characters long');
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push('Password must contain at least one uppercase letter');
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push('Password must contain at least one lowercase letter');
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push('Password must contain at least one number');
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password)) {
+      errors.push('Password must contain at least one special character (!@#$%^&*...)');
+    }
+
+    return { valid: errors.length === 0, errors };
+  }
+
   generateTokens(user: User): { accessToken: string; refreshToken: string } {
     const payload = {
       sub: user.id,
@@ -49,6 +72,12 @@ export class AuthService {
   }
 
   async signup(name: string, email: string, password: string): Promise<{ user: User; tokens: { accessToken: string; refreshToken: string } }> {
+    // Validate password strength
+    const strength = this.validatePasswordStrength(password);
+    if (!strength.valid) {
+      throw new Error(strength.errors.join('. '));
+    }
+
     const existing = await db.getUserByEmail(email);
     if (existing) {
       throw new Error('An account with this email address already exists');
@@ -75,17 +104,41 @@ export class AuthService {
   // In-memory OTP storage with 10-minute expiry
   private otpStore = new Map<string, { code: string; expiresAt: number; attempts: number }>();
 
-  async sendOtp(type: 'email' | 'phone', target: string): Promise<{ message: string; devCode?: string }> {
+  async sendOtp(type: 'email' | 'phone', target: string): Promise<{ message: string }> {
     const key = `${type}:${target.toLowerCase().trim()}`;
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     this.otpStore.set(key, { code, expiresAt, attempts: 0 });
-    console.log(`🔐 [MULTI MIND AI - OTP] ${type.toUpperCase()} OTP for ${target}: ${code}`);
 
+    // Try sending OTP via Supabase Auth (real email delivery)
+    if (type === 'email') {
+      const supabase = db.getSupabase();
+      if (supabase) {
+        try {
+          const { error } = await supabase.auth.signInWithOtp({
+            email: target.toLowerCase().trim(),
+            options: {
+              shouldCreateUser: true,
+            },
+          });
+          if (!error) {
+            console.log(`📧 [OTP] Email OTP sent via Supabase to ${target}`);
+            return {
+              message: `A 6-digit verification code has been sent to ${target}. Please check your inbox and spam folder.`,
+            };
+          }
+          console.warn(`⚠️ Supabase OTP delivery failed: ${error.message}. Using server-side OTP fallback.`);
+        } catch (err: any) {
+          console.warn(`⚠️ Supabase OTP error: ${err.message}. Using server-side OTP fallback.`);
+        }
+      }
+    }
+
+    // Fallback: server-side OTP (logged for verification)
+    console.log(`🔐 [OTP] ${type.toUpperCase()} OTP for ${target}: ${code}`);
     return {
-      message: `Verification code sent to your ${type === 'email' ? 'email address' : 'phone number'}.`,
-      devCode: code, // Convenient preview for fast testing and evaluation
+      message: `Verification code sent to your ${type === 'email' ? 'email address' : 'phone number'}. Check your inbox (or server logs if in development).`,
     };
   }
 
@@ -96,29 +149,48 @@ export class AuthService {
     name?: string
   ): Promise<{ user: User; tokens: { accessToken: string; refreshToken: string } }> {
     const key = `${type}:${target.toLowerCase().trim()}`;
+
+    // Try Supabase OTP verification first
+    if (type === 'email') {
+      const supabase = db.getSupabase();
+      if (supabase) {
+        try {
+          const { data, error } = await supabase.auth.verifyOtp({
+            email: target.toLowerCase().trim(),
+            token: code.trim(),
+            type: 'email',
+          });
+          if (!error && data?.user) {
+            console.log(`✅ [OTP] Supabase email OTP verified for ${target}`);
+            // Fall through to create/find user in our DB
+          }
+        } catch (err: any) {
+          console.warn(`⚠️ Supabase OTP verify attempt: ${err.message}`);
+        }
+      }
+    }
+
+    // Also check our server-side OTP store
     const record = this.otpStore.get(key);
+    if (record) {
+      if (Date.now() > record.expiresAt) {
+        this.otpStore.delete(key);
+        throw new Error('Verification code has expired. Please request a new code.');
+      }
 
-    if (!record) {
-      throw new Error('No OTP code requested for this destination or code expired. Please request a new code.');
-    }
+      if (record.attempts >= 5) {
+        this.otpStore.delete(key);
+        throw new Error('Too many invalid attempts. Please request a new code.');
+      }
 
-    if (Date.now() > record.expiresAt) {
+      if (record.code !== code.trim()) {
+        record.attempts += 1;
+        throw new Error('Invalid verification code. Please check and try again.');
+      }
+
+      // OTP is valid!
       this.otpStore.delete(key);
-      throw new Error('Verification code has expired. Please request a new code.');
     }
-
-    if (record.attempts >= 5) {
-      this.otpStore.delete(key);
-      throw new Error('Too many invalid attempts. Please request a new code.');
-    }
-
-    if (record.code !== code.trim()) {
-      record.attempts += 1;
-      throw new Error('Invalid verification code. Please check and try again.');
-    }
-
-    // OTP is valid!
-    this.otpStore.delete(key);
 
     let email = '';
     let displayName = name || '';

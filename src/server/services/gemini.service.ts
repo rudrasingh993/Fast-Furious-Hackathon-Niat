@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type, Schema } from '@google/genai';
+import { GoogleGenAI, Type, Schema, Modality } from '@google/genai';
 import { config } from '../config/env.js';
 import type {
   Attachment,
@@ -74,9 +74,23 @@ export class GeminiService {
 
   constructor() {
     const primary = config.gemini.model || 'gemini-2.5-flash';
+    // Only use models that are currently available on the Gemini API
+    const AVAILABLE_MODELS = [
+      'gemini-2.5-pro',
+      'gemini-2.5-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-2.0-flash',
+      'gemini-2.0-flash-lite',
+      'gemini-1.5-flash-latest',
+      'gemini-pro-latest',
+      'gemini-pro',
+      'gemini-2.0-flash-exp',
+      'learnlm-2.0-flash-experimental',
+    ];
+
     const fallbacks = config.gemini.fallbackModels && config.gemini.fallbackModels.length > 0
-      ? config.gemini.fallbackModels
-      : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro'];
+      ? config.gemini.fallbackModels.filter((m: string) => AVAILABLE_MODELS.includes(m))
+      : AVAILABLE_MODELS;
 
     this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
     this.modelName = this.fallbackChain[0];
@@ -691,6 +705,77 @@ Respond in JSON with fields: title (string), summary (string), topics (array of 
       `- **Next Steps**: You can ask specific questions about any attached document, request structured knowledge extraction, or launch a **Deep Research** session to compare conflicting web sources.\n\n` +
       `*Feel free to ask a follow-up or attach additional audio, video, or documents to continue exploring!*`
     );
+  }
+
+  // Generate images using Gemini imagen model
+  async generateImage(prompt: string): Promise<{ imageBase64: string; mimeType: string } | null> {
+    if (!this.ai) {
+      console.warn('⚠️ Gemini AI not initialized for image generation');
+      return null;
+    }
+
+    // Try Gemini native image generation models
+    const imageModels = ['gemini-2.0-flash-exp', 'gemini-2.0-flash'];
+
+    for (const model of imageModels) {
+      try {
+        const response = await this.ai.models.generateContent({
+          model,
+          contents: [{
+            role: 'user',
+            parts: [{ text: `Generate an image: ${prompt}` }],
+          }],
+          config: {
+            responseModalities: [Modality.TEXT, Modality.IMAGE],
+          },
+        });
+
+        // Check for inline image data in the response
+        if (response.candidates && response.candidates.length > 0) {
+          const parts = response.candidates[0].content?.parts || [];
+          for (const part of parts) {
+            if ((part as any).inlineData?.data) {
+              const inlineData = (part as any).inlineData;
+              console.log(`🎨 Image generated successfully using model: ${model}`);
+              return {
+                imageBase64: inlineData.data,
+                mimeType: inlineData.mimeType || 'image/png',
+              };
+            }
+          }
+        }
+
+        console.warn(`⚠️ Model ${model} did not return image data, trying next...`);
+      } catch (err: any) {
+        console.warn(`⚠️ Image generation with model ${model} failed: ${err.message}`);
+      }
+    }
+
+    // Try dedicated imagen model
+    try {
+      const response = await this.ai.models.generateImages({
+        model: 'imagen-3.0-generate-002',
+        prompt,
+        config: {
+          numberOfImages: 1,
+        },
+      });
+
+      if (response.generatedImages && response.generatedImages.length > 0) {
+        const img = response.generatedImages[0];
+        if (img.image?.imageBytes) {
+          console.log(`🎨 Image generated successfully using imagen-3.0-generate-002`);
+          return {
+            imageBase64: Buffer.from(img.image.imageBytes).toString('base64'),
+            mimeType: 'image/png',
+          };
+        }
+      }
+    } catch (err: any) {
+      console.warn(`⚠️ imagen-3.0-generate-002 failed: ${err.message}`);
+    }
+
+    return null;
   }
 }
 

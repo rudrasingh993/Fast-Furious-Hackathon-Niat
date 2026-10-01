@@ -121,7 +121,7 @@ class ApiClient {
   }
 
   async sendOtp(type: 'email' | 'phone', target: string) {
-    return this.request<{ message: string; devCode?: string }>('/auth/otp/send', {
+    return this.request<{ message: string }>('/auth/otp/send', {
       method: 'POST',
       body: JSON.stringify({ type, target }),
     });

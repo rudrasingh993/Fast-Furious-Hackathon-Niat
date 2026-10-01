@@ -5,6 +5,7 @@ import {
   analyzeAudio,
   analyzeVideo,
   analyzeDocument,
+  generateImage,
 } from '../controllers/ai.controller.js';
 import { requireAuth } from '../middleware/auth.middleware.js';
 import { uploadMiddleware } from '../middleware/upload.middleware.js';
@@ -20,5 +21,6 @@ router.post('/analyze/image', uploadMiddleware.single('file'), analyzeImage);
 router.post('/analyze/audio', uploadMiddleware.single('file'), analyzeAudio);
 router.post('/analyze/video', uploadMiddleware.single('file'), analyzeVideo);
 router.post('/analyze/document', analyzeDocument);
+router.post('/generate-image', generateImage);
 
 export default router;

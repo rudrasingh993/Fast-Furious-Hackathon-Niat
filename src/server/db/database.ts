@@ -581,8 +581,7 @@ class DatabaseService {
     return this.supabase;
   }
 
-  // Delegate all methods cleanly to local database or Supabase
-  // We use localDb as source of truth for seamless dev & test, and optionally sync with Supabase
+  // ─── Users ─────────────────────────────────────────────────
   async getUserByEmail(email: string) {
     if (this.supabase) {
       try {
@@ -655,42 +654,172 @@ class DatabaseService {
     return this.localDb.setPreference(userId, key, value);
   }
 
+  // ─── Conversations (Supabase-first for serverless persistence) ─────
   async getConversations(userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('conversations')
+          .select('*')
+          .eq('user_id', userId)
+          .eq('is_archived', false)
+          .order('updated_at', { ascending: false });
+        if (!error && data) return data;
+      } catch {}
+    }
     return this.localDb.getConversations(userId);
   }
 
   async getConversationById(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('conversations')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', userId)
+          .single();
+        if (!error && data) return data;
+      } catch {}
+    }
     return this.localDb.getConversationById(id, userId);
   }
 
   async createConversation(data: { user_id: string; title?: string; category?: string }) {
+    if (this.supabase) {
+      try {
+        const { data: conv, error } = await this.supabase
+          .from('conversations')
+          .insert({
+            user_id: data.user_id,
+            title: data.title || 'New Conversation',
+            category: data.category || 'GENERAL',
+            is_archived: false,
+          })
+          .select()
+          .single();
+        if (!error && conv) return conv;
+      } catch {}
+    }
     return this.localDb.createConversation(data);
   }
 
   async updateConversation(id: string, userId: string, updates: Partial<Conversation>) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('conversations')
+          .update({ ...updates, updated_at: new Date().toISOString() })
+          .eq('id', id)
+          .eq('user_id', userId)
+          .select()
+          .single();
+        if (!error && data) return data;
+      } catch {}
+    }
     return this.localDb.updateConversation(id, userId, updates);
   }
 
   async deleteConversation(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        // Cascade: delete messages, attachments, research related to this conversation
+        await this.supabase.from('messages').delete().eq('conversation_id', id).eq('user_id', userId);
+        await this.supabase.from('attachments').delete().eq('conversation_id', id).eq('user_id', userId);
+        const { error } = await this.supabase
+          .from('conversations')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', userId);
+        if (!error) return true;
+      } catch {}
+    }
     return this.localDb.deleteConversation(id, userId);
   }
 
+  // ─── Messages (Supabase-first for serverless persistence) ─────
   async getMessages(conversationId: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .eq('user_id', userId)
+          .order('created_at', { ascending: true });
+        if (!error && data) return data;
+      } catch {}
+    }
     return this.localDb.getMessages(conversationId, userId);
   }
 
   async createMessage(data: any) {
+    if (this.supabase) {
+      try {
+        const now = new Date().toISOString();
+        const insertData: any = {
+          conversation_id: data.conversation_id,
+          user_id: data.user_id,
+          role: data.role,
+          content: data.content,
+          metadata: data.metadata || {},
+          created_at: now,
+        };
+        if (data.reasoning_summary) {
+          insertData.reasoning_summary = data.reasoning_summary;
+        }
+        if (data.token_usage) {
+          insertData.token_usage = data.token_usage;
+        }
+
+        const { data: msg, error } = await this.supabase
+          .from('messages')
+          .insert(insertData)
+          .select()
+          .single();
+        if (!error && msg) {
+          // Also update conversation timestamp
+          await this.supabase
+            .from('conversations')
+            .update({ updated_at: now })
+            .eq('id', data.conversation_id);
+          return msg;
+        }
+      } catch {}
+    }
     return this.localDb.createMessage(data);
   }
 
   async getMessageById(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('messages')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', userId)
+          .single();
+        if (!error && data) return data;
+      } catch {}
+    }
     return this.localDb.getMessageById(id, userId);
   }
 
   async deleteMessage(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { error } = await this.supabase
+          .from('messages')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', userId);
+        if (!error) return true;
+      } catch {}
+    }
     return this.localDb.deleteMessage(id, userId);
   }
 
+  // ─── Attachments ─────────────────────────────────────────
   async createAttachment(data: any) {
     return this.localDb.createAttachment(data);
   }
@@ -781,3 +910,4 @@ class DatabaseService {
 }
 
 export const db = new DatabaseService();
+

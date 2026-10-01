@@ -82,3 +82,34 @@ export async function analyzeDocument(req: AuthenticatedRequest, res: Response):
   const result = await geminiService.analyzeDocument(text, title || 'Document');
   res.status(200).json({ success: true, data: result });
 }
+
+export async function generateImage(req: AuthenticatedRequest, res: Response): Promise<void> {
+  const { prompt } = req.body;
+  if (!prompt) {
+    res.status(400).json({ success: false, error: { code: 'BAD_REQUEST', message: 'Image generation prompt is required' } });
+    return;
+  }
+
+  try {
+    const result = await geminiService.generateImage(prompt);
+    if (result) {
+      res.status(200).json({
+        success: true,
+        data: {
+          imageBase64: result.imageBase64,
+          mimeType: result.mimeType,
+        },
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: { code: 'IMAGE_GEN_FAILED', message: 'Failed to generate image. All image generation models are unavailable.' },
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      error: { code: 'IMAGE_GEN_ERROR', message: err.message || 'Image generation failed' },
+    });
+  }
+}

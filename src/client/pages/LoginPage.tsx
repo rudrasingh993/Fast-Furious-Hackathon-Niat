@@ -19,7 +19,6 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -65,9 +64,6 @@ export const LoginPage: React.FC = () => {
       if (res.success && res.data) {
         setOtpSent(true);
         setInfo(res.data.message);
-        if (res.data.devCode) {
-          setDevCode(res.data.devCode);
-        }
       } else {
         setError(res.error?.message || 'Could not send verification code.');
       }
@@ -210,15 +206,6 @@ export const LoginPage: React.FC = () => {
           <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>{info}</span>
-          </div>
-        )}
-
-        {devCode && (
-          <div className="p-2.5 mb-4 rounded-xl bg-brand-500/10 border border-brand-500/20 text-brand-300 text-[11px] flex items-center justify-between">
-            <span>Demo Verification Code:</span>
-            <span className="font-mono font-bold tracking-widest text-white bg-brand-600/40 px-2 py-0.5 rounded">
-              {devCode}
-            </span>
           </div>
         )}
 
