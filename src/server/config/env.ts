@@ -20,6 +20,10 @@ export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
     model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+    fallbackModels: (process.env.GEMINI_FALLBACK_MODELS || 'gemini-2.5-flash,gemini-2.0-flash,gemini-2.0-flash-lite,gemini-1.5-flash,gemini-1.5-flash-8b,gemini-1.5-pro')
+      .split(',')
+      .map((m) => m.trim())
+      .filter(Boolean),
   },
 
   supabase: {
@@ -28,6 +32,7 @@ export const config = {
     serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || '',
     storageBucket: process.env.SUPABASE_STORAGE_BUCKET || 'user-files',
     jwksUrl: process.env.SUPABASE_JWKS_URL || '',
+    jwksKeys: process.env.SUPABASE_JWKS_KEYS || '',
   },
 
   limits: {

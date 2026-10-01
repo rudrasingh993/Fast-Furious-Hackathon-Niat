@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import type { User } from '../../shared/types.js';
 
+import { saveAccountToStorage } from '../components/AccountChooserModal.js';
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -43,6 +45,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.login({ email, password });
       if (res.success && res.data?.user) {
         setUser(res.data.user);
+        saveAccountToStorage({
+          email: res.data.user.email,
+          name: res.data.user.name,
+          avatarUrl: (res.data.user as any).avatar_url,
+          provider: 'email',
+        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Login failed' };
@@ -56,6 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.signup({ name, email, password });
       if (res.success && res.data?.user) {
         setUser(res.data.user);
+        saveAccountToStorage({
+          email: res.data.user.email,
+          name: res.data.user.name,
+          avatarUrl: (res.data.user as any).avatar_url,
+          provider: 'email',
+        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Signup failed' };
@@ -69,6 +83,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.verifyOtp(type, target, code, name);
       if (res.success && res.data?.user) {
         setUser(res.data.user);
+        saveAccountToStorage({
+          email: res.data.user.email,
+          name: res.data.user.name,
+          avatarUrl: (res.data.user as any).avatar_url,
+          provider: 'email',
+        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Verification failed' };
@@ -82,6 +102,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await api.googleAuth(profile);
       if (res.success && res.data?.user) {
         setUser(res.data.user);
+        saveAccountToStorage({
+          email: res.data.user.email,
+          name: res.data.user.name,
+          avatarUrl: (res.data.user as any).avatar_url,
+          provider: 'google',
+        });
         return { success: true };
       }
       return { success: false, error: res.error?.message || 'Google authentication failed' };

@@ -70,13 +70,23 @@ Be clear, helpful, professional, and well-structured with Markdown headings, bul
 export class GeminiService {
   private ai: GoogleGenAI | null = null;
   private modelName: string;
+  private fallbackChain: string[];
 
   constructor() {
-    this.modelName = config.gemini.model || 'gemini-2.5-flash';
+    const primary = config.gemini.model || 'gemini-2.5-flash';
+    const fallbacks = config.gemini.fallbackModels && config.gemini.fallbackModels.length > 0
+      ? config.gemini.fallbackModels
+      : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro'];
+
+    this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
+    this.modelName = this.fallbackChain[0];
+
     if (config.gemini.apiKey) {
       try {
         this.ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
-        console.log(`✅ Google Gemini AI Service initialized with model: ${this.modelName}`);
+        console.log(`✅ Google Gemini AI Service initialized.`);
+        console.log(`🚀 Primary Model: ${this.modelName}`);
+        console.log(`🔄 Multimodal Fallback Chain: ${this.fallbackChain.join(' -> ')}`);
       } catch (err) {
         console.warn('⚠️ Failed to initialize GoogleGenAI client:', err);
       }
@@ -89,6 +99,41 @@ export class GeminiService {
     return this.ai !== null && Boolean(config.gemini.apiKey);
   }
 
+  getPrimaryModel(): string {
+    return this.modelName;
+  }
+
+  getFallbackModels(): string[] {
+    return [...this.fallbackChain];
+  }
+
+  // Execute Gemini calls with automatic model cascade fallback
+  private async executeWithModelFallback<T>(
+    operationName: string,
+    executeFn: (model: string) => Promise<T>
+  ): Promise<T> {
+    if (!this.ai) {
+      throw new Error('Gemini client is not initialized');
+    }
+
+    let lastError: any = null;
+    for (let i = 0; i < this.fallbackChain.length; i++) {
+      const model = this.fallbackChain[i];
+      try {
+        return await executeFn(model);
+      } catch (err: any) {
+        lastError = err;
+        const nextModel = this.fallbackChain[i + 1];
+        console.warn(
+          `⚠️ [Gemini Fallback] Model "${model}" failed during ${operationName}: ${err?.message || err}.` +
+          (nextModel ? ` Shifting to fallback model: "${nextModel}"...` : ' No more fallback models.')
+        );
+      }
+    }
+
+    throw lastError || new Error(`All Gemini fallback models exhausted for ${operationName}`);
+  }
+
   // Generate title for conversation
   async generateConversationTitle(firstMessage: string): Promise<string> {
     if (!this.isAvailable()) {
@@ -97,21 +142,23 @@ export class GeminiService {
     }
 
     try {
-      const response = await this.ai!.models.generateContent({
-        model: this.modelName,
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: `Generate a concise, professional title (maximum 6 words, under 50 characters, no quotation marks) for a conversation that starts with: "${firstMessage.slice(0, 300)}"`,
-              },
-            ],
-          },
-        ],
+      return await this.executeWithModelFallback('generateConversationTitle', async (model) => {
+        const response = await this.ai!.models.generateContent({
+          model,
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `Generate a concise, professional title (maximum 6 words, under 50 characters, no quotation marks) for a conversation that starts with: "${firstMessage.slice(0, 300)}"`,
+                },
+              ],
+            },
+          ],
+        });
+        const title = response.text?.trim().replace(/^["']|["']$/g, '');
+        return title || 'New Conversation';
       });
-      const title = response.text?.trim().replace(/^["']|["']$/g, '');
-      return title || 'New Conversation';
     } catch (err) {
       return firstMessage.slice(0, 35) + '...';
     }
@@ -140,28 +187,31 @@ export class GeminiService {
     }
 
     try {
-      const response = await this.ai!.models.generateContent({
-        model: this.modelName,
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: `Analyze this user prompt and categorize intent. Respond in JSON with keys: intent ("question"|"research"|"summarization"|"analysis"|"generation"|"extraction"|"translation"|"comparison"|"conversation"), category (e.g. "GENERAL"|"TECHNOLOGY"|"CODING"|"EDUCATION"|"BUSINESS"), requires_web_search (boolean), requires_deep_research (boolean), requires_file_analysis (boolean), output_style ("concise"|"balanced"|"detailed").
+      return await this.executeWithModelFallback('classifyIntent', async (model) => {
+        const response = await this.ai!.models.generateContent({
+          model,
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `Analyze this user prompt and categorize intent. Respond in JSON with keys: intent ("question"|"research"|"summarization"|"analysis"|"generation"|"extraction"|"translation"|"comparison"|"conversation"), category (e.g. "GENERAL"|"TECHNOLOGY"|"CODING"|"EDUCATION"|"BUSINESS"), requires_web_search (boolean), requires_deep_research (boolean), requires_file_analysis (boolean), output_style ("concise"|"balanced"|"detailed").
 Prompt: "${prompt}"
 Has attachments: ${hasAttachments}`,
-              },
-            ],
+                },
+              ],
+            },
+          ],
+          config: {
+            responseMimeType: 'application/json',
           },
-        ],
-        config: {
-          responseMimeType: 'application/json',
-        },
-      });
+        });
 
-      if (response.text) {
-        return { ...defaultClassification, ...JSON.parse(response.text) };
-      }
+        if (response.text) {
+          return { ...defaultClassification, ...JSON.parse(response.text) };
+        }
+        return defaultClassification;
+      });
     } catch {}
 
     return defaultClassification;
@@ -274,103 +324,150 @@ Has attachments: ${hasAttachments}`,
       };
     }
 
-    try {
-      // Build GoogleGenAI request
-      let userInstruction = SYSTEM_INSTRUCTION;
-      if (userPreferences?.response_style) {
-        userInstruction += `\nUser preferred response style: ${userPreferences.response_style}.`;
-      }
-      if (userPreferences?.preferred_language) {
-        userInstruction += `\nUser preferred language: ${userPreferences.preferred_language}.`;
-      }
+    // Build GoogleGenAI request
+    let userInstruction = SYSTEM_INSTRUCTION;
+    if (userPreferences?.response_style) {
+      userInstruction += `\nUser preferred response style: ${userPreferences.response_style}.`;
+    }
+    if (userPreferences?.preferred_language) {
+      userInstruction += `\nUser preferred language: ${userPreferences.preferred_language}.`;
+    }
 
-      const contents: any[] = [];
+    const contents: any[] = [];
 
-      // Add conversation history
-      for (const h of history.slice(-6)) {
-        contents.push({
-          role: h.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: h.content }],
-        });
-      }
-
-      // Add current turn
-      const currentParts: any[] = [];
-      const attachmentParts = this.buildAttachmentParts(attachments, attachmentBuffers);
-      currentParts.push(...attachmentParts);
-
-      if (currentPrompt) {
-        currentParts.push({ text: currentPrompt });
-      }
-
+    // Add conversation history
+    for (const h of history.slice(-6)) {
       contents.push({
-        role: 'user',
-        parts: currentParts,
+        role: h.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: h.content }],
       });
+    }
 
-      const configObj: any = {
-        systemInstruction: userInstruction,
-      };
+    // Add current turn
+    const currentParts: any[] = [];
+    const attachmentParts = this.buildAttachmentParts(attachments, attachmentBuffers);
+    currentParts.push(...attachmentParts);
 
-      if (enableWebSearch) {
-        configObj.tools = [{ googleSearch: {} }];
-      }
+    if (currentPrompt) {
+      currentParts.push({ text: currentPrompt });
+    }
 
-      const responseStream = await this.ai!.models.generateContentStream({
-        model: this.modelName,
-        contents,
-        config: configObj,
-      });
+    contents.push({
+      role: 'user',
+      parts: currentParts,
+    });
 
-      let fullText = '';
-      for await (const chunk of responseStream) {
-        const text = chunk.text || '';
-        if (text) {
-          fullText += text;
-          onChunk(text);
+    let lastError: any = null;
+
+    // Try models in cascade: primary model first, shifting to free-tier fallbacks if unavailable or rate limited
+    for (let i = 0; i < this.fallbackChain.length; i++) {
+      const model = this.fallbackChain[i];
+      const nextModel = this.fallbackChain[i + 1];
+
+      try {
+        const configObj: any = {
+          systemInstruction: userInstruction,
+        };
+
+        if (enableWebSearch) {
+          configObj.tools = [{ googleSearch: {} }];
         }
 
-        // Extract Google Search grounding metadata if returned
-        const candidate = chunk.candidates?.[0];
-        if (candidate?.groundingMetadata) {
-          const gm = candidate.groundingMetadata as any;
-          if (gm.groundingChunks && Array.isArray(gm.groundingChunks)) {
-            for (const c of gm.groundingChunks) {
-              if (c.web?.uri) {
-                const u = c.web.uri;
-                const domain = new URL(u).hostname;
-                if (!sources.some((s) => s.url === u)) {
-                  sources.push({
-                    title: c.web.title || domain,
-                    url: u,
-                    domain,
-                    snippet: c.web.title,
-                  });
+        let responseStream: any;
+        try {
+          responseStream = await this.ai!.models.generateContentStream({
+            model,
+            contents,
+            config: configObj,
+          });
+        } catch (initErr: any) {
+          // If search tool caused failure on certain model, retry without search tool
+          if (enableWebSearch && /tool|search/i.test(initErr.message || '')) {
+            console.warn(`[Gemini Fallback] Retrying model "${model}" without search tool...`);
+            delete configObj.tools;
+            responseStream = await this.ai!.models.generateContentStream({
+              model,
+              contents,
+              config: configObj,
+            });
+          } else {
+            throw initErr;
+          }
+        }
+
+        let fullText = '';
+        let streamedChars = 0;
+
+        try {
+          for await (const chunk of responseStream) {
+            const text = chunk.text || '';
+            if (text) {
+              fullText += text;
+              streamedChars += text.length;
+              onChunk(text);
+            }
+
+            // Extract Google Search grounding metadata if returned
+            const candidate = chunk.candidates?.[0];
+            if (candidate?.groundingMetadata) {
+              const gm = candidate.groundingMetadata as any;
+              if (gm.groundingChunks && Array.isArray(gm.groundingChunks)) {
+                for (const c of gm.groundingChunks) {
+                  if (c.web?.uri) {
+                    const u = c.web.uri;
+                    const domain = new URL(u).hostname;
+                    if (!sources.some((s) => s.url === u)) {
+                      sources.push({
+                        title: c.web.title || domain,
+                        url: u,
+                        domain,
+                        snippet: c.web.title,
+                      });
+                    }
+                  }
                 }
               }
             }
           }
+        } catch (streamErr: any) {
+          // If already streamed substantial text, keep output rather than restarting
+          if (streamedChars > 60) {
+            console.warn(`[Gemini Stream] Interrupted on model "${model}":`, streamErr.message);
+            const notice = `\n\n*(Note: generation completed via ${model}).*`;
+            onChunk(notice);
+            fullText += notice;
+            return { fullText, sources, reasoningSummary };
+          }
+          throw streamErr;
         }
-      }
 
-      return {
-        fullText,
-        sources,
-        reasoningSummary,
-      };
-    } catch (err: any) {
-      console.error('Gemini stream error:', err);
-      const fallbackNotice = `\n\n*(Note: Gemini response interrupted or encountered API error: ${err.message}. Showing verified assistant summary).*`;
-      onChunk(fallbackNotice);
-      return {
-        fullText: fallbackNotice,
-        sources,
-        reasoningSummary,
-      };
+        if (fullText) {
+          return {
+            fullText,
+            sources,
+            reasoningSummary,
+          };
+        }
+      } catch (err: any) {
+        lastError = err;
+        console.warn(
+          `⚠️ [Gemini Stream Fallback] Model "${model}" failed (${err?.message || err}).` +
+          (nextModel ? ` Shifting to fallback model: "${nextModel}"...` : '')
+        );
+      }
     }
+
+    console.error('All Gemini stream models exhausted:', lastError);
+    const fallbackNotice = `\n\n*(Note: All Gemini models encountered rate limits or connection errors: ${lastError?.message || 'Service Unavailable'}. Showing assistant summary).*`;
+    onChunk(fallbackNotice);
+    return {
+      fullText: fallbackNotice,
+      sources,
+      reasoningSummary,
+    };
   }
 
-  // Specific Multimodal Analyzers
+  // Specific Multimodal Analyzers with automatic model fallback
   async analyzeImage(buffer: Buffer, mimeType: string, prompt?: string): Promise<any> {
     const userPrompt = prompt || 'Analyze this image in detail. Describe visible objects, text, composition, colors, and contextual meaning.';
     if (!this.isAvailable()) {
@@ -385,25 +482,27 @@ Has attachments: ${hasAttachments}`,
       };
     }
 
-    const response = await this.ai!.models.generateContent({
-      model: this.modelName,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType, data: buffer.toString('base64') } },
-            { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), objects (array of strings), visible_text (array of strings), layout (string), important_details (array of strings), uncertainties (array of strings), recommended_actions (array of strings).` },
-          ],
-        },
-      ],
-      config: { responseMimeType: 'application/json' },
-    });
+    return this.executeWithModelFallback('analyzeImage', async (model) => {
+      const response = await this.ai!.models.generateContent({
+        model,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { inlineData: { mimeType, data: buffer.toString('base64') } },
+              { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), objects (array of strings), visible_text (array of strings), layout (string), important_details (array of strings), uncertainties (array of strings), recommended_actions (array of strings).` },
+            ],
+          },
+        ],
+        config: { responseMimeType: 'application/json' },
+      });
 
-    try {
-      return JSON.parse(response.text || '{}');
-    } catch {
-      return { summary: response.text };
-    }
+      try {
+        return JSON.parse(response.text || '{}');
+      } catch {
+        return { summary: response.text };
+      }
+    });
   }
 
   async analyzeAudio(buffer: Buffer, mimeType: string, prompt?: string): Promise<any> {
@@ -420,25 +519,27 @@ Has attachments: ${hasAttachments}`,
       };
     }
 
-    const response = await this.ai!.models.generateContent({
-      model: this.modelName,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType, data: buffer.toString('base64') } },
-            { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), transcript (string), topics (array of strings), speakers (array of strings), action_items (array of strings), important_quotes (array of strings), uncertainties (array of strings).` },
-          ],
-        },
-      ],
-      config: { responseMimeType: 'application/json' },
-    });
+    return this.executeWithModelFallback('analyzeAudio', async (model) => {
+      const response = await this.ai!.models.generateContent({
+        model,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { inlineData: { mimeType, data: buffer.toString('base64') } },
+              { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), transcript (string), topics (array of strings), speakers (array of strings), action_items (array of strings), important_quotes (array of strings), uncertainties (array of strings).` },
+            ],
+          },
+        ],
+        config: { responseMimeType: 'application/json' },
+      });
 
-    try {
-      return JSON.parse(response.text || '{}');
-    } catch {
-      return { summary: response.text };
-    }
+      try {
+        return JSON.parse(response.text || '{}');
+      } catch {
+        return { summary: response.text };
+      }
+    });
   }
 
   async analyzeVideo(buffer: Buffer, mimeType: string, prompt?: string): Promise<any> {
@@ -458,25 +559,27 @@ Has attachments: ${hasAttachments}`,
       };
     }
 
-    const response = await this.ai!.models.generateContent({
-      model: this.modelName,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType, data: buffer.toString('base64') } },
-            { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), transcript (string), key_moments (array of {timestamp, description, importance}), topics (array of strings), entities (array of strings), actions (array of strings), uncertainties (array of strings).` },
-          ],
-        },
-      ],
-      config: { responseMimeType: 'application/json' },
-    });
+    return this.executeWithModelFallback('analyzeVideo', async (model) => {
+      const response = await this.ai!.models.generateContent({
+        model,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { inlineData: { mimeType, data: buffer.toString('base64') } },
+              { text: `${userPrompt}\nRespond in JSON format with fields: summary (string), transcript (string), key_moments (array of {timestamp, description, importance}), topics (array of strings), entities (array of strings), actions (array of strings), uncertainties (array of strings).` },
+            ],
+          },
+        ],
+        config: { responseMimeType: 'application/json' },
+      });
 
-    try {
-      return JSON.parse(response.text || '{}');
-    } catch {
-      return { summary: response.text };
-    }
+      try {
+        return JSON.parse(response.text || '{}');
+      } catch {
+        return { summary: response.text };
+      }
+    });
   }
 
   async analyzeDocument(text: string, title: string): Promise<any> {
@@ -494,31 +597,33 @@ Has attachments: ${hasAttachments}`,
       };
     }
 
-    const response = await this.ai!.models.generateContent({
-      model: this.modelName,
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            {
-              text: `Analyze this document content:
+    return this.executeWithModelFallback('analyzeDocument', async (model) => {
+      const response = await this.ai!.models.generateContent({
+        model,
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: `Analyze this document content:
 Title: ${title}
 Content:
 ${text.slice(0, 30000)}
 
 Respond in JSON with fields: title (string), summary (string), topics (array of strings), entities (array of strings), important_facts (array of strings), dates (array of strings), tasks (array of strings), questions (array of strings), citations (array of strings).`,
-            },
-          ],
-        },
-      ],
-      config: { responseMimeType: 'application/json' },
-    });
+              },
+            ],
+          },
+        ],
+        config: { responseMimeType: 'application/json' },
+      });
 
-    try {
-      return JSON.parse(response.text || '{}');
-    } catch {
-      return { summary: response.text };
-    }
+      try {
+        return JSON.parse(response.text || '{}');
+      } catch {
+        return { summary: response.text };
+      }
+    });
   }
 
   // Intelligent fallback generator when GEMINI_API_KEY is not yet supplied

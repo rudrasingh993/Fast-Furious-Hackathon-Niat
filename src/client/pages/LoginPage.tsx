@@ -10,9 +10,11 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
+  Users,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { api } from '../api/client.js';
+import { AccountChooserModal } from '../components/AccountChooserModal.js';
 
 export const LoginPage: React.FC = () => {
   const [authMode, setAuthMode] = useState<'password' | 'email_otp' | 'phone_otp'>('password');
@@ -25,6 +27,8 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isChooserOpen, setIsChooserOpen] = useState(false);
+  const [chooserMode, setChooserMode] = useState<'google' | 'email'>('google');
 
   const { login, loginWithOtp, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
@@ -101,20 +105,42 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // 4. One-Click Google Sign-In
-  const handleGoogleSignIn = async () => {
+  // 4. Interactive Google Account Chooser Popup
+  const handleGoogleSignIn = () => {
     setError(null);
-    setLoading(true);
-    const result = await loginWithGoogle({
-      email: email.trim() || 'google.user@multimind.ai',
-      name: 'Google Explorer',
-    });
-    setLoading(false);
+    setChooserMode('google');
+    setIsChooserOpen(true);
+  };
 
-    if (result.success) {
-      navigate('/app');
+  const handleOpenEmailChooser = () => {
+    setError(null);
+    setChooserMode('email');
+    setIsChooserOpen(true);
+  };
+
+  const handleAccountSelected = async (account: {
+    email: string;
+    name: string;
+    avatarUrl?: string;
+    provider: 'google' | 'email';
+  }) => {
+    setError(null);
+    if (account.provider === 'google') {
+      setLoading(true);
+      const result = await loginWithGoogle({
+        email: account.email,
+        name: account.name,
+        avatarUrl: account.avatarUrl,
+      });
+      setLoading(false);
+
+      if (result.success) {
+        navigate('/app');
+      } else {
+        setError(result.error || 'Google Sign-In failed.');
+      }
     } else {
-      setError(result.error || 'Google Sign-In failed.');
+      setEmail(account.email);
     }
   };
 
@@ -250,7 +276,18 @@ export const LoginPage: React.FC = () => {
         {authMode === 'password' && (
           <form onSubmit={handlePasswordLogin} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-slate-300">Email Address</label>
+                <button
+                  type="button"
+                  onClick={handleOpenEmailChooser}
+                  className="text-[11px] text-brand-400 hover:text-brand-300 flex items-center gap-1 transition-colors"
+                  title="Choose from saved accounts on this device"
+                >
+                  <Users className="w-3 h-3" />
+                  <span>Saved Accounts</span>
+                </button>
+              </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <Mail className="w-4 h-4" />
@@ -300,7 +337,18 @@ export const LoginPage: React.FC = () => {
         {authMode === 'email_otp' && (
           <form onSubmit={(e) => handleVerifyOtp(e, 'email')} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-medium text-slate-300">Email Address</label>
+                <button
+                  type="button"
+                  onClick={handleOpenEmailChooser}
+                  className="text-[11px] text-brand-400 hover:text-brand-300 flex items-center gap-1 transition-colors"
+                  title="Choose from saved accounts on this device"
+                >
+                  <Users className="w-3 h-3" />
+                  <span>Saved Accounts</span>
+                </button>
+              </div>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -425,6 +473,15 @@ export const LoginPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* Interactive Account Chooser Modal (Google & Email) */}
+      <AccountChooserModal
+        isOpen={isChooserOpen}
+        initialMode={chooserMode}
+        onClose={() => setIsChooserOpen(false)}
+        onSelectAccount={handleAccountSelected}
+        onUseCustomEmail={(em) => setEmail(em)}
+      />
     </div>
   );
 };

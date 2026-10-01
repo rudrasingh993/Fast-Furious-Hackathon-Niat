@@ -6,9 +6,17 @@ import type { KnowledgeItem } from '../../shared/types.js';
 export class KnowledgeService {
   private ai: GoogleGenAI | null = null;
   private modelName: string;
+  private fallbackChain: string[];
 
   constructor() {
-    this.modelName = config.gemini.model || 'gemini-2.5-flash';
+    const primary = config.gemini.model || 'gemini-2.5-flash';
+    const fallbacks = config.gemini.fallbackModels?.length
+      ? config.gemini.fallbackModels
+      : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro'];
+
+    this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
+    this.modelName = this.fallbackChain[0];
+
     if (config.gemini.apiKey) {
       try {
         this.ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
@@ -45,9 +53,10 @@ export class KnowledgeService {
     let extractedData = defaultKnowledge;
 
     if (this.ai && config.gemini.apiKey) {
-      try {
-        const response = await this.ai.models.generateContent({
-          model: this.modelName,
+      for (const model of this.fallbackChain) {
+        try {
+          const response = await this.ai.models.generateContent({
+            model,
           contents: [
             {
               role: 'user',
@@ -76,11 +85,13 @@ Respond in JSON with fields:
 
         if (response.text) {
           extractedData = JSON.parse(response.text);
+          break;
         }
       } catch (err) {
-        console.warn('Knowledge extraction AI call error:', err);
+        console.warn(`[Knowledge Fallback] Model ${model} failed, trying next...`);
       }
     }
+  }
 
     const createdItems: KnowledgeItem[] = [];
 

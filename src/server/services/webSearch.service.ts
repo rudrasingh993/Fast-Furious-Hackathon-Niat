@@ -5,9 +5,17 @@ import type { SearchSource, WebSearch } from '../../shared/types.js';
 export class WebSearchService {
   private ai: GoogleGenAI | null = null;
   private modelName: string;
+  private fallbackChain: string[];
 
   constructor() {
-    this.modelName = config.gemini.model || 'gemini-2.5-flash';
+    const primary = config.gemini.model || 'gemini-2.5-flash';
+    const fallbacks = config.gemini.fallbackModels?.length
+      ? config.gemini.fallbackModels
+      : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro'];
+
+    this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
+    this.modelName = this.fallbackChain[0];
+
     if (config.gemini.apiKey) {
       try {
         this.ai = new GoogleGenAI({ apiKey: config.gemini.apiKey });
@@ -53,24 +61,39 @@ export class WebSearchService {
       };
     }
 
-    try {
-      const response = await this.ai.models.generateContent({
-        model: this.modelName,
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: `Search the web for up-to-date, factual information to answer: "${query}". Provide a well-structured summary citing specific findings.`,
-              },
-            ],
-          },
-        ],
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
+    let response: any = null;
+    let lastErr: any = null;
 
+    for (const model of this.fallbackChain) {
+      try {
+        response = await this.ai.models.generateContent({
+          model,
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  text: `Search the web for up-to-date, factual information to answer: "${query}". Provide a well-structured summary citing specific findings.`,
+                },
+              ],
+            },
+          ],
+          config: {
+            tools: [{ googleSearch: {} }],
+          },
+        });
+        if (response) break;
+      } catch (err: any) {
+        lastErr = err;
+        console.warn(`[WebSearch Fallback] Model ${model} failed, trying next...`);
+      }
+    }
+
+    if (!response) {
+      throw lastErr || new Error('All models failed for web search');
+    }
+
+    try {
       const candidate = response.candidates?.[0];
       if (candidate?.groundingMetadata) {
         const gm = candidate.groundingMetadata as any;
