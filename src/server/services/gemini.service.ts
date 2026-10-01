@@ -84,7 +84,7 @@ export class GeminiService {
       'gemini-1.5-flash-latest',
       'gemini-pro-latest',
       'gemini-pro',
-      'gemini-2.0-flash-exp',
+
       'learnlm-2.0-flash-experimental',
     ];
 
@@ -734,7 +734,7 @@ Respond in JSON with fields: title (string), summary (string), topics (array of 
     }
 
     // Try Gemini native image generation models
-    const imageModels = ['gemini-2.0-flash-exp', 'gemini-2.0-flash'];
+    const imageModels = ['gemini-2.0-flash'];
 
     for (const model of imageModels) {
       try {

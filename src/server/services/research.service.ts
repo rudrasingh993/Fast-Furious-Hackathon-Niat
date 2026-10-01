@@ -19,7 +19,7 @@ export class ResearchService {
     const primary = config.gemini.model || 'gemini-2.5-flash';
     const fallbacks = config.gemini.fallbackModels?.length
       ? config.gemini.fallbackModels
-      : ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-pro', 'gemini-1.5-flash-latest', 'gemini-pro-latest', 'gemini-pro', 'gemini-2.0-flash-exp'];
+      : ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-pro', 'gemini-1.5-flash-latest', 'gemini-pro-latest', 'gemini-pro'];
 
     this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
     this.modelName = this.fallbackChain[0];
