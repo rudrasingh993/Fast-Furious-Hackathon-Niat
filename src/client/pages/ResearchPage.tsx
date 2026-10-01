@@ -54,15 +54,34 @@ export const ResearchPage: React.FC = () => {
         setActiveSession(res.data!);
         setObjective('');
 
-        // Poll for completion or updates
+        // Poll for completion or updates with timeout and error handling
+        let pollCount = 0;
+        let consecutiveErrors = 0;
         const interval = setInterval(async () => {
-          const check = await api.getResearch(res.data!.id);
-          if (check.success && check.data) {
-            setActiveSession(check.data);
-            if (check.data.status === 'completed' || check.data.status === 'failed') {
-              clearInterval(interval);
-              loadSessions();
+          pollCount++;
+          try {
+            const check = await api.getResearch(res.data!.id);
+            if (check.success && check.data) {
+              consecutiveErrors = 0;
+              setActiveSession(check.data);
+              if (check.data.status === 'completed' || check.data.status === 'failed') {
+                clearInterval(interval);
+                loadSessions();
+              }
+            } else {
+              consecutiveErrors++;
+              if (consecutiveErrors >= 5) {
+                clearInterval(interval);
+              }
             }
+          } catch {
+            consecutiveErrors++;
+            if (consecutiveErrors >= 5) {
+              clearInterval(interval);
+            }
+          }
+          if (pollCount >= 90) {
+            clearInterval(interval);
           }
         }, 2000);
       }

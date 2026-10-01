@@ -849,22 +849,103 @@ class DatabaseService {
   }
 
   async createResearchSession(data: any) {
+    if (this.supabase) {
+      try {
+        const now = new Date().toISOString();
+        const insertData: any = {
+          user_id: data.user_id,
+          conversation_id: data.conversation_id || null,
+          title: data.title || 'Research Session',
+          objective: data.objective,
+          research_plan: data.research_plan || [],
+          queries: data.queries || [],
+          sources: data.sources || [],
+          findings: data.findings || [],
+          contradictions: data.contradictions || [],
+          synthesis: data.synthesis || null,
+          citations: data.citations || [],
+          status: data.status || 'created',
+          created_at: now,
+          updated_at: now,
+        };
+        const { data: session, error } = await this.supabase
+          .from('research_sessions')
+          .insert(insertData)
+          .select()
+          .single();
+        if (!error && session) return session;
+        if (error) console.error('⚠️ Supabase createResearchSession error:', error.message);
+      } catch (err: any) {
+        console.error('⚠️ Supabase createResearchSession exception:', err.message);
+      }
+    }
     return this.localDb.createResearchSession(data);
   }
 
   async getResearchSessions(userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('research_sessions')
+          .select('*')
+          .eq('user_id', userId)
+          .order('updated_at', { ascending: false });
+        if (!error && data) return data;
+      } catch (err: any) {
+        console.error('⚠️ Supabase getResearchSessions exception:', err.message);
+      }
+    }
     return this.localDb.getResearchSessions(userId);
   }
 
   async getResearchSessionById(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('research_sessions')
+          .select('*')
+          .eq('id', id)
+          .eq('user_id', userId)
+          .single();
+        if (!error && data) return data;
+      } catch (err: any) {
+        console.error('⚠️ Supabase getResearchSessionById exception:', err.message);
+      }
+    }
     return this.localDb.getResearchSessionById(id, userId);
   }
 
   async updateResearchSession(id: string, userId: string, updates: any) {
+    if (this.supabase) {
+      try {
+        const { data, error } = await this.supabase
+          .from('research_sessions')
+          .update({ ...updates, updated_at: new Date().toISOString() })
+          .eq('id', id)
+          .eq('user_id', userId)
+          .select()
+          .single();
+        if (!error && data) return data;
+      } catch (err: any) {
+        console.error('⚠️ Supabase updateResearchSession exception:', err.message);
+      }
+    }
     return this.localDb.updateResearchSession(id, userId, updates);
   }
 
   async deleteResearchSession(id: string, userId: string) {
+    if (this.supabase) {
+      try {
+        const { error } = await this.supabase
+          .from('research_sessions')
+          .delete()
+          .eq('id', id)
+          .eq('user_id', userId);
+        if (!error) return true;
+      } catch (err: any) {
+        console.error('⚠️ Supabase deleteResearchSession exception:', err.message);
+      }
+    }
     return this.localDb.deleteResearchSession(id, userId);
   }
 

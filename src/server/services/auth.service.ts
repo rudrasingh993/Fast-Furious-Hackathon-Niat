@@ -150,6 +150,8 @@ export class AuthService {
   ): Promise<{ user: User; tokens: { accessToken: string; refreshToken: string } }> {
     const key = `${type}:${target.toLowerCase().trim()}`;
 
+    let isVerified = false;
+
     // Try Supabase OTP verification first
     if (type === 'email') {
       const supabase = db.getSupabase();
@@ -162,34 +164,42 @@ export class AuthService {
           });
           if (!error && data?.user) {
             console.log(`✅ [OTP] Supabase email OTP verified for ${target}`);
-            // Fall through to create/find user in our DB
+            isVerified = true;
+            this.otpStore.delete(key);
+          } else if (error) {
+            console.warn(`⚠️ Supabase OTP verify attempt failed: ${error.message}`);
           }
         } catch (err: any) {
-          console.warn(`⚠️ Supabase OTP verify attempt: ${err.message}`);
+          console.warn(`⚠️ Supabase OTP verify attempt exception: ${err.message}`);
         }
       }
     }
 
-    // Also check our server-side OTP store
-    const record = this.otpStore.get(key);
-    if (record) {
-      if (Date.now() > record.expiresAt) {
+    // If not verified via Supabase, check local server-side OTP store
+    if (!isVerified) {
+      const record = this.otpStore.get(key);
+      if (record) {
+        if (Date.now() > record.expiresAt) {
+          this.otpStore.delete(key);
+          throw new Error('Verification code has expired. Please request a new code.');
+        }
+
+        if (record.attempts >= 5) {
+          this.otpStore.delete(key);
+          throw new Error('Too many invalid attempts. Please request a new code.');
+        }
+
+        if (record.code !== code.trim()) {
+          record.attempts += 1;
+          throw new Error('Invalid verification code. Please check and try again.');
+        }
+
+        // OTP is valid!
         this.otpStore.delete(key);
-        throw new Error('Verification code has expired. Please request a new code.');
+        isVerified = true;
+      } else {
+        throw new Error('Invalid or expired verification code. Please request a new code.');
       }
-
-      if (record.attempts >= 5) {
-        this.otpStore.delete(key);
-        throw new Error('Too many invalid attempts. Please request a new code.');
-      }
-
-      if (record.code !== code.trim()) {
-        record.attempts += 1;
-        throw new Error('Invalid verification code. Please check and try again.');
-      }
-
-      // OTP is valid!
-      this.otpStore.delete(key);
     }
 
     let email = '';

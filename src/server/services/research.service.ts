@@ -19,7 +19,7 @@ export class ResearchService {
     const primary = config.gemini.model || 'gemini-2.5-flash';
     const fallbacks = config.gemini.fallbackModels?.length
       ? config.gemini.fallbackModels
-      : ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro'];
+      : ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-pro', 'gemini-1.5-flash-latest', 'gemini-pro-latest', 'gemini-pro', 'gemini-2.0-flash-exp'];
 
     this.fallbackChain = Array.from(new Set([primary, ...fallbacks]));
     this.modelName = this.fallbackChain[0];
@@ -193,35 +193,40 @@ Respond in JSON with fields:
         continue;
       }
 
-      try {
-        const response = await this.ai.models.generateContent({
-          model: this.modelName,
-          contents: [{ role: 'user', parts: [{ text: `Search for facts on: ${q}` }] }],
-          config: { tools: [{ googleSearch: {} }] },
-        });
+      for (const model of this.fallbackChain) {
+        try {
+          const response = await this.ai.models.generateContent({
+            model,
+            contents: [{ role: 'user', parts: [{ text: `Search for facts on: ${q}` }] }],
+            config: { tools: [{ googleSearch: {} }] },
+          });
 
-        const gm = (response.candidates?.[0] as any)?.groundingMetadata;
-        if (gm?.groundingChunks) {
-          for (const c of gm.groundingChunks) {
-            if (c.web?.uri) {
-              const u = c.web.uri;
-              let domain = '';
-              try {
-                domain = new URL(u).hostname;
-              } catch {}
-              if (!collected.some((s) => s.url === u)) {
-                collected.push({
-                  title: c.web.title || domain,
-                  url: u,
-                  domain,
-                  snippet: c.web.title,
-                  relevance: 0.9,
-                });
+          const gm = (response.candidates?.[0] as any)?.groundingMetadata;
+          if (gm?.groundingChunks) {
+            for (const c of gm.groundingChunks) {
+              if (c.web?.uri) {
+                const u = c.web.uri;
+                let domain = '';
+                try {
+                  domain = new URL(u).hostname;
+                } catch {}
+                if (!collected.some((s) => s.url === u)) {
+                  collected.push({
+                    title: c.web.title || domain,
+                    url: u,
+                    domain,
+                    snippet: c.web.title,
+                    relevance: 0.9,
+                  });
+                }
               }
             }
           }
+          break;
+        } catch {
+          // Try next fallback model
         }
-      } catch {}
+      }
     }
 
     // Deduplicate
