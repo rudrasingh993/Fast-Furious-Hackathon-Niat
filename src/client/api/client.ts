@@ -120,10 +120,11 @@ class ApiClient {
     return res;
   }
 
-  async sendOtp(type: 'email' | 'phone', target: string) {
+  async sendOtp(type: 'email' | 'phone', target: string, redirectTo?: string) {
+    const redirectUrl = redirectTo || (typeof window !== 'undefined' ? `${window.location.origin}/app` : undefined);
     return this.request<{ message: string }>('/auth/otp/send', {
       method: 'POST',
-      body: JSON.stringify({ type, target }),
+      body: JSON.stringify({ type, target, redirectTo: redirectUrl }),
     });
   }
 

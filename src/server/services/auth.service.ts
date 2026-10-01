@@ -104,41 +104,46 @@ export class AuthService {
   // In-memory OTP storage with 10-minute expiry
   private otpStore = new Map<string, { code: string; expiresAt: number; attempts: number }>();
 
-  async sendOtp(type: 'email' | 'phone', target: string): Promise<{ message: string }> {
+  async sendOtp(type: 'email' | 'phone', target: string, redirectTo?: string): Promise<{ message: string }> {
     const key = `${type}:${target.toLowerCase().trim()}`;
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
 
     this.otpStore.set(key, { code, expiresAt, attempts: 0 });
 
-    // Try sending OTP via Supabase Auth (real email delivery)
+    // Send Magic Link via Supabase Auth (real email delivery)
     if (type === 'email') {
       const supabase = db.getSupabase();
       if (supabase) {
         try {
+          const redirectUrl =
+            redirectTo ||
+            (process.env.APP_URL ? `${process.env.APP_URL}/app` : 'https://multi-mind-ai-phi.vercel.app/app');
+
           const { error } = await supabase.auth.signInWithOtp({
             email: target.toLowerCase().trim(),
             options: {
               shouldCreateUser: true,
+              emailRedirectTo: redirectUrl,
             },
           });
           if (!error) {
-            console.log(`📧 [OTP] Email OTP sent via Supabase to ${target}`);
+            console.log(`📧 [Magic Link] Sign-in link sent via Supabase to ${target} (redirect: ${redirectUrl})`);
             return {
-              message: `A 6-digit verification code has been sent to ${target}. Please check your inbox and spam folder.`,
+              message: `A sign-in link has been sent to ${target}. Please check your inbox and click the link to log in.`,
             };
           }
-          console.warn(`⚠️ Supabase OTP delivery failed: ${error.message}. Using server-side OTP fallback.`);
+          console.warn(`⚠️ Supabase Magic Link delivery failed: ${error.message}. Using server-side fallback.`);
         } catch (err: any) {
-          console.warn(`⚠️ Supabase OTP error: ${err.message}. Using server-side OTP fallback.`);
+          console.warn(`⚠️ Supabase Magic Link error: ${err.message}. Using server-side fallback.`);
         }
       }
     }
 
-    // Fallback: server-side OTP (logged for verification)
-    console.log(`🔐 [OTP] ${type.toUpperCase()} OTP for ${target}: ${code}`);
+    // Fallback: server-side login link notice
+    console.log(`🔐 [Link] Login link requested for ${target}`);
     return {
-      message: `Verification code sent to your ${type === 'email' ? 'email address' : 'phone number'}. Check your inbox (or server logs if in development).`,
+      message: `A sign-in link has been sent to ${target}. Please check your inbox and click the link to log in.`,
     };
   }
 

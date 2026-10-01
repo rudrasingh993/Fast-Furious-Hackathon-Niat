@@ -42,18 +42,17 @@ function getPasswordStrength(pw: string): {
 }
 
 export const SignupPage: React.FC = () => {
-  const [authMode, setAuthMode] = useState<'password' | 'email_otp'>('password');
+  const [authMode, setAuthMode] = useState<'magic_link' | 'password'>('magic_link');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otpCode, setOtpCode] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [linkSent, setLinkSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { signup, loginWithOtp } = useAuth();
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const strength = useMemo(() => getPasswordStrength(password), [password]);
@@ -87,8 +86,9 @@ export const SignupPage: React.FC = () => {
     }
   };
 
-  // 2. Request Email OTP Code
-  const handleSendOtp = async () => {
+  // 2. Send Magic Link to Email for Signup
+  const handleSendMagicLink = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError(null);
     setInfo(null);
     const target = email.trim();
@@ -100,39 +100,17 @@ export const SignupPage: React.FC = () => {
 
     setLoading(true);
     try {
-      const res = await api.sendOtp('email', target);
+      const res = await api.sendOtp('email', target, `${window.location.origin}/app`);
       setLoading(false);
       if (res.success && res.data) {
-        setOtpSent(true);
-        setInfo(res.data.message);
+        setLinkSent(true);
+        setInfo(res.data.message || `An activation link has been sent to ${target}.`);
       } else {
-        setError(res.error?.message || 'Could not send verification code.');
+        setError(res.error?.message || 'Could not send sign-up link.');
       }
     } catch (err: any) {
       setLoading(false);
-      setError(err.message || 'Failed to send verification code.');
-    }
-  };
-
-  // 3. Verify Email OTP Signup
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    const target = email.trim();
-
-    if (!target || !otpCode.trim()) {
-      setError('Please enter the 6-digit verification code.');
-      return;
-    }
-
-    setLoading(true);
-    const result = await loginWithOtp('email', target, otpCode.trim(), name.trim() || undefined);
-    setLoading(false);
-
-    if (result.success) {
-      navigate('/app');
-    } else {
-      setError(result.error || 'Invalid or expired verification code.');
+      setError(err.message || 'Failed to send sign-up link.');
     }
   };
 
@@ -202,8 +180,22 @@ export const SignupPage: React.FC = () => {
           <div className="flex-1 h-px bg-white/[0.08]" />
         </div>
 
-        {/* Method Switcher Tabs: Password vs Email OTP */}
+        {/* Method Switcher Tabs: Email Link vs Password */}
         <div className="grid grid-cols-2 gap-1 p-1 rounded-full bg-black/40 border border-white/[0.08] mb-5 text-[11px]">
+          <button
+            type="button"
+            onClick={() => {
+              setAuthMode('magic_link');
+              setError(null);
+            }}
+            className={`py-1.5 rounded-full font-medium transition-all ${
+              authMode === 'magic_link'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            Email Link
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -217,20 +209,6 @@ export const SignupPage: React.FC = () => {
             }`}
           >
             Password
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setAuthMode('email_otp');
-              setError(null);
-            }}
-            className={`py-1.5 rounded-full font-medium transition-all ${
-              authMode === 'email_otp'
-                ? 'bg-white text-black shadow-sm'
-                : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Email OTP
           </button>
         </div>
 
@@ -383,81 +361,93 @@ export const SignupPage: React.FC = () => {
           </form>
         )}
 
-        {/* 2. Tab: Email OTP */}
-        {authMode === 'email_otp' && (
-          <form onSubmit={handleVerifyOtp} className="space-y-3.5">
-            <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1.5">Full Name (Optional)</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
-                  <User className="w-4 h-4" />
-                </div>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ada Lovelace"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-neutral-300 mb-1.5">Email Address</label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
-                    <Mail className="w-4 h-4" />
+        {/* 2. Tab: Email Link (Magic Link) */}
+        {authMode === 'magic_link' && (
+          <div>
+            {!linkSent ? (
+              <form onSubmit={handleSendMagicLink} className="space-y-3.5">
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1.5">Full Name (Optional)</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Ada Lovelace"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
+                    />
                   </div>
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@example.com"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
-                  />
                 </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-neutral-300 mb-1.5">Email Address</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
+                    />
+                  </div>
+                  <p className="text-[11px] text-neutral-400 mt-2 leading-relaxed">
+                    We will send an activation link to your email. Click the link in your email to sign up and start using your workspace instantly.
+                  </p>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={loading || !email}
-                  className="btn-secondary-pill px-4 py-2 text-xs font-medium whitespace-nowrap disabled:opacity-40"
+                  type="submit"
+                  disabled={loading || !email.trim()}
+                  className="btn-primary-pill w-full mt-2 py-3 text-xs font-semibold shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  {otpSent ? 'Resend' : 'Send Code'}
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Send Activation Link</span>}
+                  {!loading && <ArrowRight className="w-3.5 h-3.5" />}
                 </button>
-              </div>
-            </div>
+              </form>
+            ) : (
+              <div className="text-center py-2 animate-fade-in">
+                <div className="w-12 h-12 rounded-full bg-white/10 border border-white/20 text-white flex items-center justify-center mx-auto mb-3 shadow-lg">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-base font-bold text-white mb-1.5">Check Your Email</h3>
+                <p className="text-xs text-[#B5B5B0] leading-relaxed mb-4">
+                  We sent an activation link to <span className="font-semibold text-white">{email}</span>. Click the link in your email to activate your account and log in.
+                </p>
 
-            {otpSent && (
-              <div>
-                <label className="block text-xs font-medium text-neutral-300 mb-1.5">6-Digit Verification Code</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
-                    <KeyRound className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value)}
-                    placeholder="123456"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs tracking-widest placeholder-neutral-500 focus:outline-none font-mono"
-                  />
+                <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] text-neutral-400 mb-4 text-left">
+                  💡 Tip: The email arrives within a few seconds. If you don't see it, check your spam or junk folder.
+                </div>
+
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSendMagicLink()}
+                    disabled={loading}
+                    className="btn-secondary-pill w-full py-2.5 text-xs font-medium flex items-center justify-center gap-2"
+                  >
+                    {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span>Resend Activation Link</span>}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLinkSent(false);
+                      setInfo(null);
+                    }}
+                    className="text-[11px] text-neutral-400 hover:text-white transition-colors py-1 block w-full"
+                  >
+                    Use a different email
+                  </button>
                 </div>
               </div>
             )}
-
-            <button
-              type="submit"
-              disabled={loading || !otpSent}
-              className="btn-primary-pill w-full mt-2 py-3 text-xs font-semibold shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Verify & Create Account</span>}
-              {!loading && <ArrowRight className="w-3.5 h-3.5" />}
-            </button>
-          </form>
+          </div>
         )}
 
         <div className="mt-6 text-center text-xs text-[#B5B5B0] border-t border-white/[0.08] pt-4">

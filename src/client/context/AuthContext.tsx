@@ -21,12 +21,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     async function initAuth() {
-      // 1. Detect OAuth access_token from Supabase / Google redirect hash
-      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token')) {
-        try {
+      // 1. Detect OAuth / Magic Link access_token from Supabase redirect hash or search
+      if (typeof window !== 'undefined') {
+        let accessToken: string | null = null;
+        if (window.location.hash && window.location.hash.includes('access_token')) {
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const accessToken = hashParams.get('access_token');
-          if (accessToken) {
+          accessToken = hashParams.get('access_token');
+        } else if (window.location.search && window.location.search.includes('access_token')) {
+          const searchParams = new URLSearchParams(window.location.search);
+          accessToken = searchParams.get('access_token');
+        }
+
+        if (accessToken) {
+          try {
             const payloadBase64 = accessToken.split('.')[1];
             const jsonStr = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
             const payload = JSON.parse(jsonStr);
@@ -43,9 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return;
               }
             }
+          } catch (err) {
+            console.error('Failed to parse OAuth/Magic Link redirect token:', err);
           }
-        } catch (err) {
-          console.error('Failed to parse OAuth redirect hash:', err);
         }
       }
 

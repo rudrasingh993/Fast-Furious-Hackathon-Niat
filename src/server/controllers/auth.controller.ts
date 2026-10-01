@@ -90,7 +90,7 @@ export async function me(req: AuthenticatedRequest, res: Response): Promise<void
 
 export async function sendOtp(req: AuthenticatedRequest, res: Response): Promise<void> {
   try {
-    const { type, target } = req.body;
+    const { type, target, redirectTo } = req.body;
     if (!type || !target) {
       res.status(400).json({
         success: false,
@@ -99,7 +99,16 @@ export async function sendOtp(req: AuthenticatedRequest, res: Response): Promise
       return;
     }
 
-    const result = await authService.sendOtp(type, target);
+    const origin = req.headers.origin || req.headers.referer;
+    let computedRedirect = redirectTo;
+    if (!computedRedirect && origin) {
+      try {
+        const u = new URL(origin);
+        computedRedirect = `${u.origin}/app`;
+      } catch {}
+    }
+
+    const result = await authService.sendOtp(type, target, computedRedirect);
     res.status(200).json({
       success: true,
       data: result,
