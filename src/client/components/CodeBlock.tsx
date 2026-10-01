@@ -23,7 +23,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, code }) => {
           onClick={handleCopy}
           className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all"
         >
-          {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+          {copied ? <Check className="w-3.5 h-3.5 text-accent-gold" /> : <Copy className="w-3.5 h-3.5" />}
           <span>{copied ? 'Copied' : 'Copy'}</span>
         </button>
       </div>
@@ -33,3 +33,4 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, code }) => {
     </div>
   );
 };
+

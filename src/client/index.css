@@ -4,17 +4,17 @@
 
 @layer base {
   :root {
-    --bg-primary: #090909;
-    --bg-secondary: #0d0d0d;
-    --bg-surface: #141414;
-    --bg-card: rgba(255, 255, 255, 0.035);
-    --bg-card-hover: rgba(255, 255, 255, 0.055);
-    --text-primary: #f5f5f0;
-    --text-secondary: #b5b5b0;
-    --text-muted: #777777;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-medium: rgba(255, 255, 255, 0.12);
-    --border-hover: rgba(255, 255, 255, 0.20);
+    --bg-primary: #050505;
+    --bg-secondary: #0a0a09;
+    --bg-surface: #0f0e0d;
+    --bg-card: rgba(242, 232, 213, 0.02);
+    --bg-card-hover: rgba(242, 232, 213, 0.04);
+    --text-primary: #F2E8D5;
+    --text-secondary: #b8b1a1;
+    --text-muted: #736b59;
+    --border-subtle: rgba(208, 163, 122, 0.08);
+    --border-medium: rgba(208, 163, 122, 0.15);
+    --border-hover: rgba(208, 163, 122, 0.25);
     --radius-card: 24px;
     --radius-pill: 9999px;
   }
@@ -30,25 +30,32 @@
   }
 
   ::selection {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(208, 163, 122, 0.3);
     color: #ffffff;
+  }
+}
+
+@layer utilities {
+  .font-editorial {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
   }
 }
 
 /* Subtle Technical Grid Background */
 .bg-tech-grid {
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(208, 163, 122, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(208, 163, 122, 0.02) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
 .bg-radial-ambient {
-  background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  background: radial-gradient(circle at 50% 0%, rgba(208, 163, 122, 0.06) 0%, transparent 60%);
 }
 
 .bg-radial-glow {
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(208, 163, 122, 0.04) 0%, transparent 70%);
 }
 
 /* Premium Monochrome Glass Cards */
@@ -114,19 +121,19 @@
 
 /* Premium Buttons */
 .btn-primary-pill {
-  background: linear-gradient(180deg, #ffffff 0%, #dcdcd7 100%);
-  color: #101010;
-  font-weight: 500;
+  background: linear-gradient(180deg, #F2E8D5 0%, #D0A37A 100%);
+  color: #050505;
+  font-weight: 600;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(242, 232, 213, 0.6);
+  box-shadow: 0 4px 20px rgba(208, 163, 122, 0.15);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-primary-pill:hover {
   transform: translateY(-1px);
-  filter: brightness(1.05);
-  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.2);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 24px rgba(208, 163, 122, 0.25);
 }
 
 .btn-primary-pill:active {
@@ -156,13 +163,19 @@
 
 /* Typography Gradient Utilities */
 .text-gradient-silver {
-  background: linear-gradient(180deg, #ffffff 30%, rgba(255, 255, 255, 0.45) 100%);
+  background: linear-gradient(180deg, #F2E8D5 30%, rgba(208, 163, 122, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-champagne {
+  background: linear-gradient(180deg, #F2E8D5 20%, #D0A37A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-subtle {
-  background: linear-gradient(180deg, #f5f5f0 0%, #a3a3a0 100%);
+  background: linear-gradient(180deg, #e8e5dc 0%, #948c7a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

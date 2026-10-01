@@ -161,7 +161,7 @@ export const LibraryPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="p-2 rounded-xl bg-white/5">{getMediaIcon(file.media_type)}</div>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-accent-bronze/10 text-accent-gold border border-accent-bronze/20">
                     {file.processing_status}
                   </span>
                 </div>
@@ -217,3 +217,4 @@ export const LibraryPage: React.FC = () => {
     </div>
   );
 };
+

@@ -9,7 +9,7 @@ interface UserMessageProps {
 export const UserMessage: React.FC<UserMessageProps> = ({ message }) => {
   return (
     <div className="flex justify-end my-4 animate-slide-up">
-      <div className="max-w-[85%] md:max-w-[75%] rounded-2xl rounded-tr-sm bg-white/[0.07] border border-white/15 text-[#F5F5F0] p-4 shadow-xl backdrop-blur-md">
+      <div className="max-w-[85%] md:max-w-[75%] rounded-2xl rounded-tr-sm bg-white/[0.07] border border-white/15 text-brand-100 p-4 shadow-xl backdrop-blur-md">
         {/* Attachments preview */}
         {message.attachments && message.attachments.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
@@ -41,3 +41,4 @@ export const UserMessage: React.FC<UserMessageProps> = ({ message }) => {
     </div>
   );
 };
+

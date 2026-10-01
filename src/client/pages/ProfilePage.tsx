@@ -79,7 +79,7 @@ export const ProfilePage: React.FC = () => {
             <div className="text-xs text-slate-400 flex items-center gap-2 font-mono mt-0.5">
               <span>{user.email}</span>
               <span>•</span>
-              <span className="text-emerald-400 flex items-center gap-1">
+              <span className="text-accent-gold flex items-center gap-1">
                 <Shield className="w-3 h-3" /> Active Session
               </span>
             </div>
@@ -119,7 +119,7 @@ export const ProfilePage: React.FC = () => {
               <span>{saving ? 'Saving...' : 'Update Name'}</span>
             </button>
             {saved && (
-              <span className="flex items-center gap-1 text-xs text-emerald-400 font-medium">
+              <span className="flex items-center gap-1 text-xs text-accent-gold font-medium">
                 <Check className="w-4 h-4" /> Updated!
               </span>
             )}
@@ -156,7 +156,7 @@ export const ProfilePage: React.FC = () => {
           </div>
 
           <div className="p-4 rounded-xl glass-panel-subtle border border-white/5">
-            <div className="flex items-center gap-2 text-emerald-400 text-xs mb-1">
+            <div className="flex items-center gap-2 text-accent-gold text-xs mb-1">
               <Database className="w-4 h-4" />
               <span>Knowledge Items</span>
             </div>
@@ -167,3 +167,4 @@ export const ProfilePage: React.FC = () => {
     </div>
   );
 };
+

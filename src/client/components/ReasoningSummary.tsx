@@ -61,7 +61,7 @@ export const ReasoningSummary: React.FC<ReasoningSummaryProps> = ({ summary }) =
           {summary.method && summary.method.length > 0 && (
             <div>
               <div className="flex items-center gap-1.5 text-slate-400 font-medium mb-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-accent-gold" />
                 <span>Methodology & Evidence Evaluation</span>
               </div>
               <ul className="pl-5 space-y-1 text-slate-300 list-disc">
@@ -104,7 +104,7 @@ export const ReasoningSummary: React.FC<ReasoningSummaryProps> = ({ summary }) =
 
           <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-white/5 font-mono">
             <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-400" /> Factual integrity verified
+              <ShieldCheck className="w-3 h-3 text-accent-gold" /> Factual integrity verified
             </span>
             <span>Private chain-of-thought protected</span>
           </div>
@@ -113,3 +113,4 @@ export const ReasoningSummary: React.FC<ReasoningSummaryProps> = ({ summary }) =
     </div>
   );
 };
+

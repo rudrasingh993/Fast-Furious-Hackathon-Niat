@@ -83,7 +83,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#F5F5F0] flex flex-col justify-center items-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-surface-950 text-brand-100 flex flex-col justify-center items-center p-6 relative overflow-hidden">
       {/* Background ambient lighting and technical grid */}
       <div className="absolute inset-0 bg-tech-grid opacity-30 pointer-events-none" />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-radial-ambient pointer-events-none" />
@@ -97,7 +97,7 @@ export const LoginPage: React.FC = () => {
       {/* Login Card */}
       <div className="w-full max-w-md p-7 sm:p-8 card-glass shadow-2xl relative z-10 border border-white/[0.12]">
         <h2 className="text-xl font-bold text-white mb-1.5">Welcome Back</h2>
-        <p className="text-xs text-[#B5B5B0] mb-6">
+        <p className="text-xs text-brand-500 mb-6">
           Sign in to access your multimodal intelligence workspace.
         </p>
 
@@ -177,7 +177,7 @@ export const LoginPage: React.FC = () => {
         )}
 
         {info && !linkSent && (
-          <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs">
+          <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-accent-bronze/10 border border-accent-bronze/20 text-emerald-300 text-xs">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>{info}</span>
           </div>
@@ -223,7 +223,7 @@ export const LoginPage: React.FC = () => {
                   <Mail className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-base font-bold text-white mb-1.5">Check Your Email</h3>
-                <p className="text-xs text-[#B5B5B0] leading-relaxed mb-4">
+                <p className="text-xs text-brand-500 leading-relaxed mb-4">
                   We sent a sign-in link to <span className="font-semibold text-white">{email}</span>. Click the link in that email to log in directly.
                 </p>
 
@@ -306,7 +306,7 @@ export const LoginPage: React.FC = () => {
           </form>
         )}
 
-        <div className="mt-6 text-center text-xs text-[#B5B5B0] border-t border-white/[0.08] pt-4">
+        <div className="mt-6 text-center text-xs text-brand-500 border-t border-white/[0.08] pt-4">
           Don't have an account?{' '}
           <Link to="/signup" className="text-white hover:underline font-medium">
             Sign up free
@@ -316,3 +316,4 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
+

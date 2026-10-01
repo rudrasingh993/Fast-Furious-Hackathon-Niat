@@ -20,7 +20,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#090909] text-[#F5F5F0]">
+    <div className="flex h-screen w-screen overflow-hidden bg-surface-950 text-brand-100">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-shrink-0">
         <Sidebar />
@@ -61,3 +61,4 @@ export const AppShell: React.FC = () => {
     </div>
   );
 };
+

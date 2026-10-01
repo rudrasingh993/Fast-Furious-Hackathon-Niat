@@ -105,7 +105,7 @@ export const ResearchPage: React.FC = () => {
       {/* Left Sidebar: Sessions List */}
       <div className="w-full md:w-80 border-r border-white/5 bg-[#0B0B0B]/80 p-4 flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 font-semibold text-[#F5F5F0] text-sm">
+          <div className="flex items-center gap-2 font-semibold text-brand-100 text-sm">
             <Compass className="w-4 h-4 text-white/80" />
             <span>Research Sessions</span>
           </div>
@@ -125,7 +125,7 @@ export const ResearchPage: React.FC = () => {
               onChange={(e) => setObjective(e.target.value)}
               placeholder="e.g. Comparative analysis of multimodal AI architectures in 2026..."
               rows={2}
-              className="w-full bg-[#121212] border border-white/10 rounded-xl p-2.5 text-xs text-[#F5F5F0] placeholder-[#666] focus:outline-none focus:border-white/30 resize-none transition-colors"
+              className="w-full bg-[#121212] border border-white/10 rounded-xl p-2.5 text-xs text-brand-100 placeholder-[#666] focus:outline-none focus:border-white/30 resize-none transition-colors"
             />
             <button
               type="submit"
@@ -153,7 +153,7 @@ export const ResearchPage: React.FC = () => {
                   onClick={() => setActiveSession(s)}
                   className={`p-3 rounded-xl text-xs cursor-pointer transition-all border ${
                     isSelected
-                      ? 'bg-white/10 border-white/20 text-[#F5F5F0] shadow-sm'
+                      ? 'bg-white/10 border-white/20 text-brand-100 shadow-sm'
                       : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] text-[#A0A09B]'
                   }`}
                 >
@@ -162,7 +162,7 @@ export const ResearchPage: React.FC = () => {
                     <span
                       className={`capitalize ${
                         s.status === 'completed'
-                          ? 'text-emerald-400'
+                          ? 'text-accent-gold'
                           : s.status === 'failed'
                           ? 'text-rose-400'
                           : 'text-amber-400'
@@ -213,7 +213,7 @@ export const ResearchPage: React.FC = () => {
                   onClick={handleCopyReport}
                   className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-medium transition-all"
                 >
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copied ? <Check className="w-4 h-4 text-accent-gold" /> : <Copy className="w-4 h-4" />}
                   <span>{copied ? 'Copied Report' : 'Copy Report'}</span>
                 </button>
               )}
@@ -229,7 +229,7 @@ export const ResearchPage: React.FC = () => {
                 <div
                   className={`p-2.5 rounded-lg border ${
                     activeSession.research_plan
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                      ? 'bg-accent-bronze/10 border-accent-bronze/30 text-emerald-300'
                       : 'bg-white/5 border-white/5 text-slate-500'
                   }`}
                 >
@@ -238,7 +238,7 @@ export const ResearchPage: React.FC = () => {
                 <div
                   className={`p-2.5 rounded-lg border ${
                     activeSession.sources && activeSession.sources.length > 0
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                      ? 'bg-accent-bronze/10 border-accent-bronze/30 text-emerald-300'
                       : 'bg-white/5 border-white/5 text-slate-500'
                   }`}
                 >
@@ -247,7 +247,7 @@ export const ResearchPage: React.FC = () => {
                 <div
                   className={`p-2.5 rounded-lg border ${
                     activeSession.findings && activeSession.findings.length > 0
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                      ? 'bg-accent-bronze/10 border-accent-bronze/30 text-emerald-300'
                       : 'bg-white/5 border-white/5 text-slate-500'
                   }`}
                 >
@@ -256,7 +256,7 @@ export const ResearchPage: React.FC = () => {
                 <div
                   className={`p-2.5 rounded-lg border ${
                     activeSession.synthesis
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                      ? 'bg-accent-bronze/10 border-accent-bronze/30 text-emerald-300'
                       : 'bg-white/5 border-white/5 text-slate-500'
                   }`}
                 >
@@ -301,7 +301,7 @@ export const ResearchPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {activeSession.findings.map((f, idx) => (
                     <div key={idx} className="p-4 rounded-xl glass-panel-subtle border border-white/5">
-                      <div className="flex items-center justify-between text-[10px] text-emerald-400 font-mono mb-2">
+                      <div className="flex items-center justify-between text-[10px] text-accent-gold font-mono mb-2">
                         <span>Finding #{idx + 1}</span>
                         <span>Confidence: {((f.confidence || 0.9) * 100).toFixed(0)}%</span>
                       </div>
@@ -366,3 +366,4 @@ export const ResearchPage: React.FC = () => {
     </div>
   );
 };
+

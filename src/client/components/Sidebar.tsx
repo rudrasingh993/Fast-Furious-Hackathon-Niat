@@ -83,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
   ];
 
   return (
-    <aside className="w-64 h-full flex flex-col bg-[#0D0D0D] border-r border-white/[0.08] select-none text-[#B5B5B0]">
+    <aside className="w-64 h-full flex flex-col bg-surface-900 border-r border-white/[0.08] select-none text-brand-500">
       {/* Brand Header */}
       <div className="p-4 flex items-center justify-between border-b border-white/[0.08]">
         <NavLink
@@ -184,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       {/* Footer System Status */}
       <div className="p-3 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between">
         <div className="flex items-center gap-1.5 font-mono">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span className="w-2 h-2 rounded-full bg-accent-gold animate-pulse"></span>
           <span>Gemini 2.5 Flash</span>
         </div>
         <span className="text-[10px] font-mono">v1.0.0</span>
@@ -192,3 +192,4 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
     </aside>
   );
 };
+

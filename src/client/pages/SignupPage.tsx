@@ -37,7 +37,7 @@ function getPasswordStrength(pw: string): {
   if (score <= 1) return { score, label: 'Very Weak', color: 'bg-red-500', checks };
   if (score === 2) return { score, label: 'Weak', color: 'bg-orange-500', checks };
   if (score === 3) return { score, label: 'Fair', color: 'bg-yellow-500', checks };
-  if (score === 4) return { score, label: 'Strong', color: 'bg-emerald-500', checks };
+  if (score === 4) return { score, label: 'Strong', color: 'bg-accent-bronze', checks };
   return { score, label: 'Very Strong', color: 'bg-green-400', checks };
 }
 
@@ -124,7 +124,7 @@ export const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#F5F5F0] flex flex-col justify-center items-center p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-surface-950 text-brand-100 flex flex-col justify-center items-center p-6 relative overflow-hidden">
       {/* Background ambient lighting and technical grid */}
       <div className="absolute inset-0 bg-tech-grid opacity-30 pointer-events-none" />
       <div className="absolute top-1/4 right-1/2 translate-x-1/2 w-[700px] h-[400px] bg-radial-ambient pointer-events-none" />
@@ -138,7 +138,7 @@ export const SignupPage: React.FC = () => {
       {/* Signup Card */}
       <div className="w-full max-w-md p-7 sm:p-8 card-glass shadow-2xl relative z-10 border border-white/[0.12]">
         <h2 className="text-xl font-bold text-white mb-1.5">Create Workspace Account</h2>
-        <p className="text-xs text-[#B5B5B0] mb-6">
+        <p className="text-xs text-brand-500 mb-6">
           Start researching, generating, and thinking across modalities.
         </p>
 
@@ -218,7 +218,7 @@ export const SignupPage: React.FC = () => {
         )}
 
         {info && (
-          <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs">
+          <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-accent-bronze/10 border border-accent-bronze/20 text-emerald-300 text-xs">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>{info}</span>
           </div>
@@ -292,7 +292,7 @@ export const SignupPage: React.FC = () => {
                       />
                     </div>
                     <span className={`text-[10px] font-medium ${
-                      strength.score <= 2 ? 'text-red-400' : strength.score <= 3 ? 'text-yellow-400' : 'text-emerald-400'
+                      strength.score <= 2 ? 'text-red-400' : strength.score <= 3 ? 'text-yellow-400' : 'text-accent-gold'
                     }`}>
                       {strength.label}
                     </span>
@@ -304,7 +304,7 @@ export const SignupPage: React.FC = () => {
                       <div
                         key={check.label}
                         className={`flex items-center gap-1 text-[10px] ${
-                          check.passed ? 'text-emerald-400' : 'text-slate-500'
+                          check.passed ? 'text-accent-gold' : 'text-slate-500'
                         }`}
                       >
                         {check.passed ? (
@@ -342,7 +342,7 @@ export const SignupPage: React.FC = () => {
                 </p>
               )}
               {confirmPassword && password === confirmPassword && password.length > 0 && (
-                <p className="mt-1 text-[10px] text-emerald-400 flex items-center gap-1">
+                <p className="mt-1 text-[10px] text-accent-gold flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3" /> Passwords match
                 </p>
               )}
@@ -415,7 +415,7 @@ export const SignupPage: React.FC = () => {
                   <Mail className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-base font-bold text-white mb-1.5">Check Your Email</h3>
-                <p className="text-xs text-[#B5B5B0] leading-relaxed mb-4">
+                <p className="text-xs text-brand-500 leading-relaxed mb-4">
                   We sent an activation link to <span className="font-semibold text-white">{email}</span>. Click the link in your email to activate your account and log in.
                 </p>
 
@@ -448,7 +448,7 @@ export const SignupPage: React.FC = () => {
           </div>
         )}
 
-        <div className="mt-6 text-center text-xs text-[#B5B5B0] border-t border-white/[0.08] pt-4">
+        <div className="mt-6 text-center text-xs text-brand-500 border-t border-white/[0.08] pt-4">
           Already have an account?{' '}
           <Link to="/login" className="text-white hover:underline font-medium">
             Sign in
@@ -458,3 +458,4 @@ export const SignupPage: React.FC = () => {
     </div>
   );
 };
+

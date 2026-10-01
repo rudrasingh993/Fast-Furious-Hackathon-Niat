@@ -59,14 +59,14 @@ export const LandingPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#090909] text-[#F5F5F0] selection:bg-white/20 selection:text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-[surface-950] text-brand-100 selection:bg-white/20 selection:text-white relative overflow-x-hidden">
       {/* Background ambient lighting and technical grid */}
       <div className="fixed inset-0 bg-tech-grid opacity-60 pointer-events-none z-0" />
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-radial-ambient pointer-events-none z-0" />
 
       {/* Floating Minimal Navigation Bar */}
       <nav className="fixed top-5 inset-x-0 z-50 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto h-14 rounded-full bg-[#0D0D0D]/75 backdrop-blur-xl border border-white/[0.08] shadow-2xl px-4 sm:px-6 flex items-center justify-between transition-all">
+        <div className="max-w-6xl mx-auto h-14 rounded-full bg-surface-900/75 backdrop-blur-xl border border-white/[0.08] shadow-2xl px-4 sm:px-6 flex items-center justify-between transition-all">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <img src="/logo.svg" alt="Multi Mind AI" className="w-7 h-7 rounded-full border border-white/15 shadow-inner group-hover:border-white/30 transition-colors" />
@@ -76,7 +76,7 @@ export const LandingPage: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-7 text-xs font-medium text-[#B5B5B0]">
+          <div className="hidden md:flex items-center gap-7 text-xs font-medium text-brand-500">
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#multimodal" className="hover:text-white transition-colors">Multimodal</a>
             <a href="#preview" className="hover:text-white transition-colors">Workspace</a>
@@ -89,7 +89,7 @@ export const LandingPage: React.FC = () => {
           <div className="hidden sm:flex items-center gap-3">
             <Link
               to="/login"
-              className="text-xs font-medium text-[#B5B5B0] hover:text-white px-3 py-1.5 rounded-full transition-colors"
+              className="text-xs font-medium text-brand-500 hover:text-white px-3 py-1.5 rounded-full transition-colors"
             >
               Sign In
             </Link>
@@ -115,7 +115,7 @@ export const LandingPage: React.FC = () => {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden max-w-md mx-auto mt-2 rounded-2xl bg-[#111111]/95 backdrop-blur-2xl border border-white/10 p-4 shadow-2xl flex flex-col gap-3 text-xs font-medium text-[#B5B5B0]">
+          <div className="md:hidden max-w-md mx-auto mt-2 rounded-2xl bg-surface-800/95 backdrop-blur-2xl border border-white/10 p-4 shadow-2xl flex flex-col gap-3 text-xs font-medium text-brand-500">
             <a
               href="#features"
               onClick={() => setMobileMenuOpen(false)}
@@ -185,13 +185,13 @@ export const LandingPage: React.FC = () => {
         </div>
 
         {/* Massive Editorial Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-bold text-gradient-silver tracking-tight leading-[0.98] max-w-5xl mb-6">
+        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-editorial font-semibold text-gradient-champagne tracking-tight leading-[0.98] max-w-5xl mb-6">
           One Intelligent Platform.<br className="hidden sm:inline" />
           Every Modality.
         </h1>
 
         {/* Short Description */}
-        <p className="text-sm sm:text-base md:text-lg text-[#B5B5B0] max-w-2xl mb-10 leading-relaxed font-normal">
+        <p className="text-sm sm:text-base md:text-lg text-brand-500 max-w-2xl mb-10 leading-relaxed font-normal">
           Understand, create, and synthesize across text, vision, audio waveforms, video files, and deep web research through one unified, persistent AI workspace.
         </p>
 
@@ -264,8 +264,8 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Status indicator */}
-            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-emerald-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-accent-gold">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-gold animate-pulse" />
               <span>ONLINE</span>
             </div>
           </div>
@@ -278,7 +278,7 @@ export const LandingPage: React.FC = () => {
                 <div className="space-y-3.5">
                   {/* User query card */}
                   <div className="flex justify-end">
-                    <div className="max-w-xl p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs text-[#F5F5F0]">
+                    <div className="max-w-xl p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 text-xs text-brand-100">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="px-2 py-0.5 rounded-md bg-white/10 text-white font-mono text-[10px]">
                           system_topology.png (1.4 MB)
@@ -303,7 +303,7 @@ export const LandingPage: React.FC = () => {
                     </div>
 
                     {/* AI Response text */}
-                    <p className="text-xs text-[#E5E5E0] leading-relaxed">
+                    <p className="text-xs text-brand-300 leading-relaxed">
                       Cross-attention multimodal tokenization bypasses decoupled OCR encoders entirely, resulting in an empirical <strong>3.2× speedup in time-to-first-token (TTFT)</strong> and a <strong>38% reduction in inference VRAM</strong> for dense visual schemas.
                     </p>
 
@@ -328,7 +328,7 @@ export const LandingPage: React.FC = () => {
                       <span className="font-semibold text-white">Q3_Financial_Audit_Report.pdf</span>
                       <span className="text-[10px] text-neutral-500 font-mono">48 pages · 2.4 MB</span>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px]">
+                    <span className="px-2 py-0.5 rounded-full bg-accent-bronze/10 text-accent-gold border border-accent-bronze/20 text-[10px]">
                       Extracted & Grounded
                     </span>
                   </div>
@@ -342,7 +342,7 @@ export const LandingPage: React.FC = () => {
                     </div>
                     <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5">
                       <div className="text-[10px] text-neutral-400">Audio Sync Status</div>
-                      <div className="text-sm font-bold text-emerald-400 mt-1">100% Corroborated</div>
+                      <div className="text-sm font-bold text-accent-gold mt-1">100% Corroborated</div>
                     </div>
                     <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5">
                       <div className="text-[10px] text-neutral-400">Action Items Flagged</div>
@@ -367,15 +367,15 @@ export const LandingPage: React.FC = () => {
                   </div>
                   <div className="space-y-2 text-neutral-400 text-xs">
                     <div className="flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <Check className="w-3.5 h-3.5 text-accent-gold" />
                       <span>Formulated 4 orthogonal search angles across electrolyte chemistry</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <Check className="w-3.5 h-3.5 text-accent-gold" />
                       <span>Evaluated 22 peer-reviewed journal papers and patent filings</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <Check className="w-3.5 h-3.5 text-accent-gold" />
                       <span>Resolved conflicting cycle-life claims into unified executive synthesis</span>
                     </div>
                   </div>
@@ -391,7 +391,7 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div className="text-sm font-semibold text-white mt-1 flex items-center justify-between">
                   <span>Gemini 2.5 Pro</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-accent-gold" />
                 </div>
                 <div className="text-[11px] text-neutral-400 mt-1">Multimodal Core Engine</div>
               </div>
@@ -408,7 +408,7 @@ export const LandingPage: React.FC = () => {
                 <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-wider">
                   Web Grounding
                 </div>
-                <div className="text-sm font-semibold text-emerald-400 mt-1 flex items-center gap-1.5">
+                <div className="text-sm font-semibold text-accent-gold mt-1 flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Verified Real-Time</span>
                 </div>
@@ -442,7 +442,7 @@ export const LandingPage: React.FC = () => {
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
             Unified Multimodal Intelligence
           </h2>
-          <p className="text-sm text-[#B5B5B0] leading-relaxed">
+          <p className="text-sm text-brand-500 leading-relaxed">
             Eliminate fragmented tools. Seamlessly correlate documents, spoken audio, visual charts, and autonomous research across a single cognitive canvas.
           </p>
         </div>
@@ -458,7 +458,7 @@ export const LandingPage: React.FC = () => {
               <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
                 Autonomous Multimodal Engine
               </h3>
-              <p className="text-xs sm:text-sm text-[#B5B5B0] max-w-md leading-relaxed">
+              <p className="text-xs sm:text-sm text-brand-500 max-w-md leading-relaxed">
                 Tokens from images, voice notes, PDFs, code files, and live web searches share a unified embedding space. Ask complex questions across multiple inputs simultaneously.
               </p>
             </div>
@@ -472,16 +472,16 @@ export const LandingPage: React.FC = () => {
                 <Brain className="w-5 h-5" />
               </div>
               {/* Orbiting nodes */}
-              <div className="absolute -top-1 left-1/4 p-2 rounded-xl bg-[#141414] border border-white/10 text-white shadow-lg">
+              <div className="absolute -top-1 left-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
                 <ImageIcon className="w-4 h-4" />
               </div>
-              <div className="absolute bottom-2 right-1/4 p-2 rounded-xl bg-[#141414] border border-white/10 text-white shadow-lg">
+              <div className="absolute bottom-2 right-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
                 <Mic className="w-4 h-4" />
               </div>
-              <div className="absolute top-1/2 -right-2 p-2 rounded-xl bg-[#141414] border border-white/10 text-white shadow-lg">
+              <div className="absolute top-1/2 -right-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
                 <FileText className="w-4 h-4" />
               </div>
-              <div className="absolute top-1/2 -left-2 p-2 rounded-xl bg-[#141414] border border-white/10 text-white shadow-lg">
+              <div className="absolute top-1/2 -left-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
                 <Compass className="w-4 h-4" />
               </div>
             </div>
@@ -496,7 +496,7 @@ export const LandingPage: React.FC = () => {
               <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
                 Multi-Round Deep Research
               </h3>
-              <p className="text-xs sm:text-sm text-[#B5B5B0] leading-relaxed">
+              <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
                 Deconstructs open-ended queries into targeted search rounds. Evaluates claims, flags contradictions, and synthesizes structured reports with citations.
               </p>
             </div>
@@ -505,15 +505,15 @@ export const LandingPage: React.FC = () => {
               <div className="text-[10px] font-mono text-neutral-400">RESEARCH PIPELINE</div>
               <div className="flex items-center justify-between text-neutral-300">
                 <span>1. Deconstruct Objective</span>
-                <span className="text-emerald-400 font-mono text-[10px]">DONE</span>
+                <span className="text-accent-gold font-mono text-[10px]">DONE</span>
               </div>
               <div className="flex items-center justify-between text-neutral-300">
                 <span>2. Multi-Round Search</span>
-                <span className="text-emerald-400 font-mono text-[10px]">20 SOURCES</span>
+                <span className="text-accent-gold font-mono text-[10px]">20 SOURCES</span>
               </div>
               <div className="flex items-center justify-between text-neutral-300">
                 <span>3. Detect Contradictions</span>
-                <span className="text-emerald-400 font-mono text-[10px]">CORROBORATED</span>
+                <span className="text-accent-gold font-mono text-[10px]">CORROBORATED</span>
               </div>
               <div className="flex items-center justify-between text-neutral-300">
                 <span>4. Synthesize Markdown</span>
@@ -534,13 +534,13 @@ export const LandingPage: React.FC = () => {
               <div className="text-base font-semibold text-neutral-200 mb-1">
                 AI Reasoning Requests
               </div>
-              <p className="text-xs text-[#B5B5B0] leading-relaxed">
+              <p className="text-xs text-brand-500 leading-relaxed">
                 Powering rigorous analysis across enterprise research, legal audits, academic papers, and software architecture.
               </p>
             </div>
 
             <div className="mt-6 flex items-center gap-3 pt-4 border-t border-white/[0.08] text-xs text-neutral-400">
-              <Shield className="w-4 h-4 text-emerald-400" />
+              <Shield className="w-4 h-4 text-accent-gold" />
               <span>Full Supabase RLS isolation on every query</span>
             </div>
           </div>
@@ -554,30 +554,30 @@ export const LandingPage: React.FC = () => {
               <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
                 Every Modality. One Workspace.
               </h3>
-              <p className="text-xs sm:text-sm text-[#B5B5B0] leading-relaxed">
+              <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
                 Native support for PDFs, DOCX, CSVs, browser audio recordings, diagrams, screenshots, and structured knowledge extraction.
               </p>
             </div>
 
             {/* Monochrome Dock of Modalities (Inspired by Screenshot 3 bottom dock) */}
             <div className="mt-8 flex flex-wrap gap-2.5">
-              <div className="p-3 rounded-2xl bg-[#141414] border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
                 <FileText className="w-4 h-4 text-neutral-300" />
                 <span>PDF & Office Docs</span>
               </div>
-              <div className="p-3 rounded-2xl bg-[#141414] border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
                 <Mic className="w-4 h-4 text-neutral-300" />
                 <span>Voice & Audio Memos</span>
               </div>
-              <div className="p-3 rounded-2xl bg-[#141414] border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
                 <ImageIcon className="w-4 h-4 text-neutral-300" />
                 <span>Diagrams & Vision</span>
               </div>
-              <div className="p-3 rounded-2xl bg-[#141414] border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
                 <Globe className="w-4 h-4 text-neutral-300" />
                 <span>Google Search Grounding</span>
               </div>
-              <div className="p-3 rounded-2xl bg-[#141414] border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
                 <Database className="w-4 h-4 text-neutral-300" />
                 <span>Entity Knowledge Graph</span>
               </div>
@@ -592,10 +592,10 @@ export const LandingPage: React.FC = () => {
           <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
             Tensor Pipeline
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-3">
+          <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight mb-3">
             How Multimodal Processing Works
           </h2>
-          <p className="text-xs sm:text-sm text-[#B5B5B0]">
+          <p className="text-xs sm:text-sm text-brand-500">
             Input diverse formats simultaneously. The core engine aligns multi-source tokens into unified reasoning.
           </p>
         </div>
@@ -637,7 +637,7 @@ export const LandingPage: React.FC = () => {
               Gemini 2.5 Pro + Cross-Attention Alignment
             </p>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white font-mono text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-gold animate-pulse" />
               <span>Real-Time Fusion</span>
             </div>
           </div>
@@ -645,7 +645,7 @@ export const LandingPage: React.FC = () => {
           {/* Output Column */}
           <div className="space-y-3">
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-3">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-accent-gold" />
               <div className="text-xs">
                 <div className="font-semibold text-white">Verified Synthesis</div>
                 <div className="text-neutral-400 text-[11px]">Audited against source grounding</div>
@@ -696,10 +696,10 @@ export const LandingPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Title Column (Inspired by Screenshot 1) */}
           <div className="lg:col-span-4 sticky top-28">
-            <h2 className="text-4xl sm:text-6xl font-bold text-white tracking-tight leading-[1.0] mb-4">
+            <h2 className="text-4xl sm:text-6xl font-editorial font-medium text-white tracking-tight leading-[1.0] mb-4">
               What they<br />say about us
             </h2>
-            <p className="text-xs sm:text-sm text-[#B5B5B0] leading-relaxed max-w-xs">
+            <p className="text-xs sm:text-sm text-brand-500 leading-relaxed max-w-xs">
               Researchers, engineers, and analysts share how Multi Mind AI transformed their multimodal knowledge synthesis.
             </p>
           </div>
@@ -718,7 +718,7 @@ export const LandingPage: React.FC = () => {
                     <div className="text-xs text-neutral-400">AI Research Lead</div>
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-[#E5E5E0] leading-relaxed">
+                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
                   "Multi Mind AI has completely transformed how I analyze multi-source technical whitepapers. Dropping a 40-page PDF and an audio lecture note into one unified chat feels like magic."
                 </p>
               </div>
@@ -736,7 +736,7 @@ export const LandingPage: React.FC = () => {
                     <div className="text-xs text-neutral-400">Principal Systems Architect</div>
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-[#E5E5E0] leading-relaxed">
+                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
                   "The transparent reasoning drawer and citation mapping give our engineering team total auditability. We can trace every single claim back to its primary source."
                 </p>
               </div>
@@ -754,7 +754,7 @@ export const LandingPage: React.FC = () => {
                     <div className="text-xs text-neutral-400">Autonomous Technology Lead</div>
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-[#E5E5E0] leading-relaxed">
+                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
                   "The autonomous deep research engine deconstructed our competitive intelligence questions into 4 orthogonal search angles and flagged contradictions instantly."
                 </p>
               </div>
@@ -772,7 +772,7 @@ export const LandingPage: React.FC = () => {
                     <div className="text-xs text-neutral-400">Bioinformatics Fellow</div>
                   </div>
                 </div>
-                <p className="text-xs sm:text-sm text-[#E5E5E0] leading-relaxed">
+                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
                   "I finally have one workspace for vision diagnostics, audio transcriptions, and live web grounding. The model resilience and fast latency are unmatched."
                 </p>
               </div>
@@ -787,10 +787,10 @@ export const LandingPage: React.FC = () => {
           <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
             Plans & Access
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-3">
+          <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-3">
             Transparent Pricing
           </h2>
-          <p className="text-xs sm:text-sm text-[#B5B5B0]">
+          <p className="text-xs sm:text-sm text-brand-500">
             Start free with full multimodal intelligence. Scale as your research operations expand.
           </p>
         </div>
@@ -928,7 +928,7 @@ export const LandingPage: React.FC = () => {
           <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
             Answers & Clarity
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight">
             Frequently Asked Questions
           </h2>
         </div>
@@ -951,7 +951,7 @@ export const LandingPage: React.FC = () => {
                 />
               </button>
               {openFaq === idx && (
-                <p className="mt-3 text-xs sm:text-sm text-[#B5B5B0] leading-relaxed pr-8 animate-fade-in">
+                <p className="mt-3 text-xs sm:text-sm text-brand-500 leading-relaxed pr-8 animate-fade-in">
                   {faq.a}
                 </p>
               )}
@@ -964,10 +964,10 @@ export const LandingPage: React.FC = () => {
       <section className="py-24 px-6 max-w-5xl mx-auto border-t border-white/[0.06] text-center relative z-10">
         <div className="card-glass p-10 sm:p-14 border-white/20 shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
-          <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-4 relative z-10">
+          <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-4 relative z-10">
             Start Synthesizing Intelligence Today
           </h2>
-          <p className="text-xs sm:text-sm text-[#B5B5B0] max-w-lg mx-auto mb-8 relative z-10">
+          <p className="text-xs sm:text-sm text-brand-500 max-w-lg mx-auto mb-8 relative z-10">
             Join researchers and teams using Multi Mind AI to seamlessly bridge text, media, documents, and autonomous research.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
@@ -989,7 +989,7 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* Large Sophisticated Dark Footer */}
-      <footer className="border-t border-white/[0.08] bg-[#070707] py-16 px-6 text-xs text-[#777777] relative z-10">
+      <footer className="border-t border-white/[0.08] bg-surface-900 py-16 px-6 text-xs text-brand-700 relative z-10">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand Column */}
           <div className="col-span-2 space-y-3">
@@ -1001,7 +1001,7 @@ export const LandingPage: React.FC = () => {
               Universal Multimodal Intelligence & Deep Research Platform. One unified cognitive workspace for text, vision, audio, documents, and web grounding.
             </p>
             <div className="flex items-center gap-2 pt-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-accent-gold animate-pulse" />
               <span className="text-[10px] font-mono text-neutral-400">All Systems Operational</span>
             </div>
           </div>
@@ -1049,3 +1049,6 @@ export const LandingPage: React.FC = () => {
     </div>
   );
 };
+
+
+

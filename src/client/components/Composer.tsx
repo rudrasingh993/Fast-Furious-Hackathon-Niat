@@ -203,7 +203,7 @@ export const Composer: React.FC<ComposerProps> = ({
           onKeyDown={handleKeyDown}
           placeholder="Ask anything, upload docs, audio, video, images, or research..."
           rows={1}
-          className="w-full bg-transparent text-[#F5F5F0] placeholder-neutral-500 text-sm md:text-base resize-none focus:outline-none px-3 pt-2 pb-1 max-h-[180px] leading-relaxed"
+          className="w-full bg-transparent text-brand-100 placeholder-neutral-500 text-sm md:text-base resize-none focus:outline-none px-3 pt-2 pb-1 max-h-[180px] leading-relaxed"
         />
 
         {/* Toolbar Controls */}
@@ -228,7 +228,7 @@ export const Composer: React.FC<ComposerProps> = ({
               </button>
 
               {showAttachMenu && (
-                <div className="absolute left-0 bottom-full mb-2 w-48 p-1.5 rounded-2xl bg-[#141414] border border-white/10 shadow-2xl z-30 animate-fade-in text-xs">
+                <div className="absolute left-0 bottom-full mb-2 w-48 p-1.5 rounded-2xl bg-surface-200 border border-white/10 shadow-2xl z-30 animate-fade-in text-xs">
                   <button
                     type="button"
                     onClick={() => triggerFileInput('image/*')}
@@ -344,3 +344,4 @@ export const Composer: React.FC<ComposerProps> = ({
     </div>
   );
 };
+

@@ -112,7 +112,7 @@ export const SearchPage: React.FC = () => {
             onClick={() => setActiveTab('knowledge')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               activeTab === 'knowledge'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                ? 'bg-accent-bronze/20 text-emerald-300 border border-accent-bronze/30'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -205,7 +205,7 @@ export const SearchPage: React.FC = () => {
           {(activeTab === 'all' || activeTab === 'knowledge') && results.knowledge && (
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Database className="w-4 h-4 text-emerald-400" />
+                <Database className="w-4 h-4 text-accent-gold" />
                 <h3 className="text-sm font-semibold text-white">Extracted Knowledge Items</h3>
               </div>
 
@@ -217,7 +217,7 @@ export const SearchPage: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {results.knowledge.map((k: any) => (
                     <div key={k.id} className="p-3.5 rounded-xl glass-panel-subtle border border-white/5">
-                      <div className="flex items-center justify-between text-[10px] text-emerald-400 font-mono mb-1">
+                      <div className="flex items-center justify-between text-[10px] text-accent-gold font-mono mb-1">
                         <span>{k.knowledge_type.toUpperCase()}</span>
                         <span>Confidence: {((k.confidence || 0.9) * 100).toFixed(0)}%</span>
                       </div>
@@ -236,3 +236,4 @@ export const SearchPage: React.FC = () => {
     </div>
   );
 };
+

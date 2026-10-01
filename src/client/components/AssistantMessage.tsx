@@ -45,7 +45,7 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
   return (
     <div className="flex gap-3 my-4 animate-slide-up group">
       {/* Bot Avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#F5F5F0] shadow-sm border border-white/15 mt-1">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-brand-100 shadow-sm border border-white/15 mt-1">
         <Sparkles className="w-4 h-4 text-white/90" />
       </div>
 
@@ -56,7 +56,7 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
         )}
 
         {/* Message Bubble */}
-        <div className="rounded-2xl rounded-tl-sm p-4 card-glass text-[#F5F5F0] shadow-md">
+        <div className="rounded-2xl rounded-tl-sm p-4 card-glass text-brand-100 shadow-md">
           <MarkdownRenderer content={message.content || ''} />
 
           {/* Sources and Citations list */}
@@ -73,7 +73,7 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
                 className="flex items-center gap-1 px-2 py-1 rounded-md hover:bg-white/5 hover:text-white transition-colors"
                 title="Copy response"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-accent-gold" /> : <Copy className="w-3.5 h-3.5" />}
                 <span className="text-[11px]">{copied ? 'Copied' : 'Copy'}</span>
               </button>
 
@@ -122,3 +122,4 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
     </div>
   );
 };
+

@@ -91,7 +91,7 @@ export const KnowledgePage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-            <Database className="w-5 h-5 text-emerald-400" />
+            <Database className="w-5 h-5 text-accent-gold" />
             <span>Extracted Knowledge Base</span>
           </h2>
           <p className="text-xs md:text-sm text-slate-400 mt-1">
@@ -166,13 +166,13 @@ export const KnowledgePage: React.FC = () => {
           {items.map((item) => (
             <div
               key={item.id}
-              className="p-5 rounded-2xl glass-panel border border-white/5 hover:border-emerald-500/30 transition-all flex flex-col justify-between group"
+              className="p-5 rounded-2xl glass-panel border border-white/5 hover:border-accent-bronze/30 transition-all flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="p-2 rounded-xl bg-white/5">{getCategoryIcon(item.knowledge_type)}</div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-accent-bronze/10 text-accent-gold border border-accent-bronze/20">
                       {item.knowledge_type.toUpperCase()}
                     </span>
                     <button
@@ -233,3 +233,4 @@ export const KnowledgePage: React.FC = () => {
     </div>
   );
 };
+

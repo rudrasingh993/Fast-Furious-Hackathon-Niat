@@ -50,7 +50,7 @@ export const UserMenu: React.FC = () => {
             <div className="font-semibold text-slate-200">{user.name}</div>
             <div className="text-slate-400 text-[11px] truncate">{user.email}</div>
             <div className="mt-1 flex items-center gap-1 text-[10px] text-brand-300 font-mono">
-              <Shield className="w-3 h-3 text-emerald-400" />
+              <Shield className="w-3 h-3 text-accent-gold" />
               <span>JWT Authenticated</span>
             </div>
           </div>
@@ -98,3 +98,4 @@ export const UserMenu: React.FC = () => {
     </div>
   );
 };
+

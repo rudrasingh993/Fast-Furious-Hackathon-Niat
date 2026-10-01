@@ -41,7 +41,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         prompt: 'Conduct a deep research report on the state of multimodal generative AI in 2026, comparing top architectures.',
       },
       {
-        icon: <Image className="w-5 h-5 text-emerald-400" />,
+        icon: <Image className="w-5 h-5 text-accent-gold" />,
         title: 'Visual Screenshot & Diagram Inspection',
         prompt: 'Analyze this UI screenshot: identify layout hierarchy, color palettes, and code improvement suggestions.',
       },
@@ -109,3 +109,4 @@ export const MessageList: React.FC<MessageListProps> = ({
     </div>
   );
 };
+

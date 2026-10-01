@@ -136,7 +136,7 @@ export const SettingsPage: React.FC = () => {
         {/* Security & System Transparency Box */}
         <div className="p-6 rounded-2xl glass-panel border border-white/10 space-y-3">
           <div className="flex items-center gap-2 pb-3 border-b border-white/5 text-sm font-semibold text-white">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <ShieldCheck className="w-4 h-4 text-accent-gold" />
             <span>Architecture & Security Guarantees</span>
           </div>
 
@@ -160,7 +160,7 @@ export const SettingsPage: React.FC = () => {
         {/* Save Button */}
         <div className="flex items-center justify-end gap-3 pt-2">
           {saved && (
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium animate-fade-in">
+            <div className="flex items-center gap-1.5 text-xs text-accent-gold font-medium animate-fade-in">
               <Check className="w-4 h-4" />
               <span>Preferences saved successfully!</span>
             </div>
@@ -179,3 +179,4 @@ export const SettingsPage: React.FC = () => {
     </div>
   );
 };
+
