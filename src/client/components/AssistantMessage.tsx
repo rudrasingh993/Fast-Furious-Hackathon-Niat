@@ -45,8 +45,8 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
   return (
     <div className="flex gap-3 my-4 animate-slide-up group">
       {/* Bot Avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md border border-white/10 mt-1">
-        <Sparkles className="w-4 h-4" />
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#F5F5F0] shadow-sm border border-white/15 mt-1">
+        <Sparkles className="w-4 h-4 text-white/90" />
       </div>
 
       <div className="flex-1 max-w-[92%] md:max-w-[85%]">
@@ -56,7 +56,7 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({
         )}
 
         {/* Message Bubble */}
-        <div className="rounded-2xl rounded-tl-sm p-4 bg-surface-900/90 border border-white/10 text-slate-100 shadow-md">
+        <div className="rounded-2xl rounded-tl-sm p-4 card-glass text-[#F5F5F0] shadow-md">
           <MarkdownRenderer content={message.content || ''} />
 
           {/* Sources and Citations list */}

@@ -105,25 +105,23 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col justify-center items-center p-6 relative overflow-hidden">
-      {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#090909] text-[#F5F5F0] flex flex-col justify-center items-center p-6 relative overflow-hidden">
+      {/* Background ambient lighting and technical grid */}
+      <div className="absolute inset-0 bg-tech-grid opacity-30 pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-radial-ambient pointer-events-none" />
 
       {/* Header Logo */}
-      <Link to="/" className="flex items-center gap-2.5 font-bold text-xl text-white tracking-tight mb-8">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-xl shadow-brand-500/20">
-          <Brain className="w-5 h-5" />
+      <Link to="/" className="flex items-center gap-2.5 font-bold text-lg text-white tracking-tight mb-8 relative z-10 group">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-b from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-white shadow-inner group-hover:border-white/30 transition-colors">
+          <Brain className="w-4 h-4 text-white/90" />
         </div>
-        <span className="bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
-          Multi Mind AI
-        </span>
+        <span>Multi Mind AI</span>
       </Link>
 
       {/* Login Card */}
-      <div className="w-full max-w-md p-7 sm:p-8 rounded-2xl glass-panel shadow-2xl relative z-10 border border-white/10">
+      <div className="w-full max-w-md p-7 sm:p-8 card-glass shadow-2xl relative z-10 border border-white/[0.12]">
         <h2 className="text-xl font-bold text-white mb-1.5">Welcome Back</h2>
-        <p className="text-xs text-slate-400 mb-6">
+        <p className="text-xs text-[#B5B5B0] mb-6">
           Sign in to access your multimodal intelligence workspace.
         </p>
 
@@ -132,7 +130,7 @@ export const LoginPage: React.FC = () => {
           type="button"
           onClick={handleGoogleSignIn}
           disabled={loading}
-          className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold text-xs shadow-md transition-all flex items-center justify-center gap-2.5 mb-5 active:scale-95 disabled:opacity-50"
+          className="w-full py-2.5 px-4 rounded-full bg-white hover:bg-neutral-200 text-neutral-900 font-medium text-xs shadow-md transition-all flex items-center justify-center gap-2.5 mb-5 active:scale-95 disabled:opacity-50"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -156,25 +154,26 @@ export const LoginPage: React.FC = () => {
         </button>
 
         <div className="flex items-center gap-3 my-5">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="text-[11px] text-slate-500 uppercase tracking-wider font-medium">
+          <div className="flex-1 h-px bg-white/[0.08]" />
+          <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono">
             or continue with email
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-white/[0.08]" />
         </div>
 
         {/* Method Switcher Tabs: Password vs Email OTP */}
-        <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-white/[0.04] border border-white/5 mb-5 text-[11px]">
+        {/* Method Switcher Tabs: Password vs Email OTP */}
+        <div className="grid grid-cols-2 gap-1 p-1 rounded-full bg-black/40 border border-white/[0.08] mb-5 text-[11px]">
           <button
             type="button"
             onClick={() => {
               setAuthMode('password');
               setError(null);
             }}
-            className={`py-1.5 rounded-lg font-medium transition-all ${
+            className={`py-1.5 rounded-full font-medium transition-all ${
               authMode === 'password'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Password
@@ -185,10 +184,10 @@ export const LoginPage: React.FC = () => {
               setAuthMode('email_otp');
               setError(null);
             }}
-            className={`py-1.5 rounded-lg font-medium transition-all ${
+            className={`py-1.5 rounded-full font-medium transition-all ${
               authMode === 'email_otp'
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             Email OTP
@@ -213,9 +212,9 @@ export const LoginPage: React.FC = () => {
         {authMode === 'password' && (
           <form onSubmit={handlePasswordLogin} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+              <label className="block text-xs font-medium text-neutral-300 mb-1.5">Email Address</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
@@ -225,15 +224,15 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs placeholder-slate-500 focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-xs font-medium text-neutral-300 mb-1.5">Password</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -243,7 +242,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs placeholder-slate-500 focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -251,7 +250,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-medium text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-primary-pill w-full mt-2 py-3 text-xs font-semibold shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Sign In</span>}
               {!loading && <ArrowRight className="w-3.5 h-3.5" />}
@@ -263,10 +262,10 @@ export const LoginPage: React.FC = () => {
         {authMode === 'email_otp' && (
           <form onSubmit={handleVerifyOtp} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
+              <label className="block text-xs font-medium text-neutral-300 mb-1.5">Email Address</label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
                     <Mail className="w-4 h-4" />
                   </div>
                   <input
@@ -275,14 +274,14 @@ export const LoginPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs placeholder-slate-500 focus:outline-none"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs placeholder-neutral-500 focus:outline-none"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={handleSendOtp}
                   disabled={loading || !email}
-                  className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-medium border border-white/10 transition-all disabled:opacity-40 whitespace-nowrap"
+                  className="btn-secondary-pill px-4 py-2 text-xs font-medium whitespace-nowrap disabled:opacity-40"
                 >
                   {otpSent ? 'Resend' : 'Send Code'}
                 </button>
@@ -291,9 +290,9 @@ export const LoginPage: React.FC = () => {
 
             {otpSent && (
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">6-Digit Email Code</label>
+                <label className="block text-xs font-medium text-neutral-300 mb-1.5">6-Digit Verification Code</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
                     <KeyRound className="w-4 h-4" />
                   </div>
                   <input
@@ -303,7 +302,7 @@ export const LoginPage: React.FC = () => {
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
                     placeholder="123456"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-white text-xs tracking-widest placeholder-slate-500 focus:outline-none font-mono"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-xs tracking-widest placeholder-neutral-500 focus:outline-none font-mono"
                   />
                 </div>
               </div>
@@ -312,7 +311,7 @@ export const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading || !otpSent}
-              className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white font-medium text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="btn-primary-pill w-full mt-2 py-3 text-xs font-semibold shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>Verify & Sign In</span>}
               {!loading && <ArrowRight className="w-3.5 h-3.5" />}
@@ -320,9 +319,9 @@ export const LoginPage: React.FC = () => {
           </form>
         )}
 
-        <div className="mt-6 text-center text-xs text-slate-400 border-t border-white/5 pt-4">
+        <div className="mt-6 text-center text-xs text-[#B5B5B0] border-t border-white/[0.08] pt-4">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-brand-400 hover:text-brand-300 font-medium">
+          <Link to="/signup" className="text-white hover:underline font-medium">
             Sign up free
           </Link>
         </div>

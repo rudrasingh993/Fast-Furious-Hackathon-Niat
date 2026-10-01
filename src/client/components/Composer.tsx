@@ -195,7 +195,7 @@ export const Composer: React.FC<ComposerProps> = ({
       />
 
       {/* Main Composer Box */}
-      <div className="glass-panel rounded-2xl p-2.5 shadow-2xl transition-all border border-white/10 focus-within:border-brand-500/50 focus-within:ring-2 focus-within:ring-brand-500/20">
+      <div className="card-glass rounded-2xl p-3 shadow-2xl transition-all border border-white/[0.12] focus-within:border-white/30 focus-within:ring-1 focus-within:ring-white/20">
         <textarea
           ref={textareaRef}
           value={content}
@@ -203,11 +203,11 @@ export const Composer: React.FC<ComposerProps> = ({
           onKeyDown={handleKeyDown}
           placeholder="Ask anything, upload docs, audio, video, images, or research..."
           rows={1}
-          className="w-full bg-transparent text-slate-100 placeholder-slate-400 text-sm md:text-base resize-none focus:outline-none px-3 pt-2 pb-1 max-h-[180px] leading-relaxed"
+          className="w-full bg-transparent text-[#F5F5F0] placeholder-neutral-500 text-sm md:text-base resize-none focus:outline-none px-3 pt-2 pb-1 max-h-[180px] leading-relaxed"
         />
 
         {/* Toolbar Controls */}
-        <div className="flex items-center justify-between pt-2 border-t border-white/5 mt-1">
+        <div className="flex items-center justify-between pt-2 border-t border-white/[0.08] mt-1">
           {/* Left Controls: Attachments, Mic, Search & Deep Research Toggles */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* Attachment Button & Popup Menu */}
@@ -216,49 +216,49 @@ export const Composer: React.FC<ComposerProps> = ({
                 type="button"
                 onClick={() => setShowAttachMenu(!showAttachMenu)}
                 disabled={uploadingFiles}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-white/5"
+                className="btn-secondary-pill flex items-center gap-1 px-3 py-1.5 text-xs font-medium"
                 title="Attach files"
               >
                 {uploadingFiles ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-brand-400" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                 ) : (
-                  <Paperclip className="w-4 h-4" />
+                  <Paperclip className="w-3.5 h-3.5" />
                 )}
                 <span className="hidden sm:inline">Attach</span>
               </button>
 
               {showAttachMenu && (
-                <div className="absolute left-0 bottom-full mb-2 w-48 p-1 rounded-xl bg-surface-900 border border-white/10 shadow-2xl z-30 animate-fade-in text-xs">
+                <div className="absolute left-0 bottom-full mb-2 w-48 p-1.5 rounded-2xl bg-[#141414] border border-white/10 shadow-2xl z-30 animate-fade-in text-xs">
                   <button
                     type="button"
                     onClick={() => triggerFileInput('image/*')}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-slate-200 hover:bg-white/5 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-neutral-200 hover:bg-white/5 rounded-xl transition-colors"
                   >
-                    <ImageIcon className="w-4 h-4 text-cyan-400" />
+                    <ImageIcon className="w-4 h-4 text-neutral-300" />
                     <span>Upload Image</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => triggerFileInput('.pdf,.doc,.docx,.txt,.csv,.json,.md')}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-slate-200 hover:bg-white/5 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-neutral-200 hover:bg-white/5 rounded-xl transition-colors"
                   >
-                    <FileText className="w-4 h-4 text-brand-400" />
+                    <FileText className="w-4 h-4 text-neutral-300" />
                     <span>Upload Document</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => triggerFileInput('audio/*')}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-slate-200 hover:bg-white/5 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-neutral-200 hover:bg-white/5 rounded-xl transition-colors"
                   >
-                    <Music className="w-4 h-4 text-emerald-400" />
+                    <Music className="w-4 h-4 text-neutral-300" />
                     <span>Upload Audio</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => triggerFileInput('video/*')}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-slate-200 hover:bg-white/5 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-neutral-200 hover:bg-white/5 rounded-xl transition-colors"
                   >
-                    <Film className="w-4 h-4 text-rose-400" />
+                    <Film className="w-4 h-4 text-neutral-300" />
                     <span>Upload Video</span>
                   </button>
                 </div>
@@ -269,14 +269,14 @@ export const Composer: React.FC<ComposerProps> = ({
             <button
               type="button"
               onClick={() => setShowRecorder(!showRecorder)}
-              className={`p-2 text-xs rounded-lg transition-all border ${
+              className={`p-2 text-xs rounded-full transition-all border ${
                 showRecorder
                   ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                  : 'bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 border-white/5'
+                  : 'btn-secondary-pill'
               }`}
               title="Record voice"
             >
-              <Mic className="w-4 h-4" />
+              <Mic className="w-3.5 h-3.5" />
             </button>
 
             {/* Web Search Toggle */}
@@ -286,10 +286,10 @@ export const Composer: React.FC<ComposerProps> = ({
                 setEnableWebSearch(!enableWebSearch);
                 if (!enableWebSearch) setEnableDeepResearch(false);
               }}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-all border ${
                 enableWebSearch
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 shadow-sm'
-                  : 'bg-white/5 text-slate-400 hover:text-slate-200 border-white/5'
+                  ? 'bg-white text-black font-semibold border-white shadow-sm'
+                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/10'
               }`}
               title="Enable live Google Search grounding"
             >
@@ -304,10 +304,10 @@ export const Composer: React.FC<ComposerProps> = ({
                 setEnableDeepResearch(!enableDeepResearch);
                 if (!enableDeepResearch) setEnableWebSearch(true);
               }}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-all border ${
                 enableDeepResearch
-                  ? 'bg-brand-500/25 text-brand-300 border-brand-500/50 shadow-sm'
-                  : 'bg-white/5 text-slate-400 hover:text-slate-200 border-white/5'
+                  ? 'bg-white text-black font-semibold border-white shadow-sm'
+                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/10'
               }`}
               title="Activate multi-stage Deep Research engine"
             >
@@ -322,7 +322,7 @@ export const Composer: React.FC<ComposerProps> = ({
               <button
                 type="button"
                 onClick={onStopGeneration}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-medium bg-rose-600 hover:bg-rose-500 text-white rounded-xl transition-all shadow-lg"
+                className="flex items-center gap-1 px-3 py-2 text-xs font-medium bg-rose-600 hover:bg-rose-500 text-white rounded-full transition-all shadow-lg"
               >
                 <StopCircle className="w-4 h-4" />
                 <span>Stop</span>
@@ -332,7 +332,7 @@ export const Composer: React.FC<ComposerProps> = ({
                 type="button"
                 onClick={() => handleSubmit()}
                 disabled={(!content.trim() && attachments.length === 0) || uploadingFiles}
-                className="flex items-center justify-center p-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed group"
+                className="btn-primary-pill p-2.5 rounded-full shadow-md text-neutral-900 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed group"
                 title="Send message (Enter)"
               >
                 <Send className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

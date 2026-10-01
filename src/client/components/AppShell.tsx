@@ -20,7 +20,7 @@ export const AppShell: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#090d16] text-slate-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#090909] text-[#F5F5F0]">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-shrink-0">
         <Sidebar />
@@ -29,7 +29,7 @@ export const AppShell: React.FC = () => {
       {/* Mobile Drawer Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/80 backdrop-blur-md z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -45,9 +45,9 @@ export const AppShell: React.FC = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Subtle background glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle monochrome ambient light */}
+        <div className="absolute inset-0 bg-tech-grid opacity-20 pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-radial-glow pointer-events-none" />
 
         <TopBar
           onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}

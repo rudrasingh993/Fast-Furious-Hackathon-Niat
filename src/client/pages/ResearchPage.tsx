@@ -103,21 +103,21 @@ export const ResearchPage: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden">
       {/* Left Sidebar: Sessions List */}
-      <div className="w-full md:w-80 border-r border-white/5 bg-surface-950/60 p-4 flex flex-col overflow-y-auto">
+      <div className="w-full md:w-80 border-r border-white/5 bg-[#0B0B0B]/80 p-4 flex flex-col overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 font-semibold text-white text-sm">
-            <Compass className="w-4 h-4 text-brand-400" />
+          <div className="flex items-center gap-2 font-semibold text-[#F5F5F0] text-sm">
+            <Compass className="w-4 h-4 text-white/80" />
             <span>Research Sessions</span>
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-slate-400">
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-[#8E8E89]">
             {sessions.length}
           </span>
         </div>
 
         {/* New Research Input Form */}
         <form onSubmit={handleStartResearch} className="mb-4">
-          <div className="p-3 rounded-xl glass-panel-subtle border border-white/10 space-y-2">
-            <label className="text-[11px] font-medium text-slate-300 block">
+          <div className="p-3 rounded-2xl card-glass-subtle border border-white/10 space-y-2">
+            <label className="text-[11px] font-medium text-[#D8D8D4] block">
               Launch Deep Investigation
             </label>
             <textarea
@@ -125,12 +125,12 @@ export const ResearchPage: React.FC = () => {
               onChange={(e) => setObjective(e.target.value)}
               placeholder="e.g. Comparative analysis of multimodal AI architectures in 2026..."
               rows={2}
-              className="w-full bg-surface-900 border border-white/10 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500/50 resize-none"
+              className="w-full bg-[#121212] border border-white/10 rounded-xl p-2.5 text-xs text-[#F5F5F0] placeholder-[#666] focus:outline-none focus:border-white/30 resize-none transition-colors"
             />
             <button
               type="submit"
               disabled={loading || !objective.trim()}
-              className="w-full py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium text-xs shadow-md transition-all flex items-center justify-center gap-1.5 disabled:opacity-40"
+              className="btn-primary-pill w-full py-2 flex items-center justify-center gap-1.5 text-xs font-semibold disabled:opacity-40"
             >
               {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               <span>Start Research</span>
@@ -141,7 +141,7 @@ export const ResearchPage: React.FC = () => {
         {/* Sessions list */}
         <div className="flex-1 space-y-1.5 overflow-y-auto pr-1">
           {sessions.length === 0 ? (
-            <div className="text-xs text-slate-500 text-center py-8">
+            <div className="text-xs text-[#666] text-center py-8">
               No research sessions yet. Enter an objective above!
             </div>
           ) : (
@@ -153,8 +153,8 @@ export const ResearchPage: React.FC = () => {
                   onClick={() => setActiveSession(s)}
                   className={`p-3 rounded-xl text-xs cursor-pointer transition-all border ${
                     isSelected
-                      ? 'bg-brand-500/15 border-brand-500/40 text-white'
-                      : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] text-slate-300'
+                      ? 'bg-white/10 border-white/20 text-[#F5F5F0] shadow-sm'
+                      : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] text-[#A0A09B]'
                   }`}
                 >
                   <div className="font-medium line-clamp-1 mb-1">{s.title || s.objective}</div>
