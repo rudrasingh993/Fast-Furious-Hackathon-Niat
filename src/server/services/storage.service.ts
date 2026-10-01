@@ -123,6 +123,29 @@ export class StorageService {
     }
     return null;
   }
+
+  async getFileBuffer(storagePath: string): Promise<Buffer | null> {
+    const localFilePath = this.getLocalFilePath(storagePath);
+    if (localFilePath) {
+      return fs.readFileSync(localFilePath);
+    }
+    
+    // Try Supabase if not found locally
+    const supabase = db.getSupabase();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.storage
+          .from(config.supabase.storageBucket)
+          .download(storagePath);
+        if (data && !error) {
+          return Buffer.from(await data.arrayBuffer());
+        }
+      } catch (err) {
+        console.warn('Failed to download file from Supabase:', err);
+      }
+    }
+    return null;
+  }
 }
 
 export const storageService = new StorageService();

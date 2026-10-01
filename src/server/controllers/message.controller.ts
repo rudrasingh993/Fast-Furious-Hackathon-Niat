@@ -48,10 +48,10 @@ export async function createMessage(req: AuthenticatedRequest, res: Response): P
         });
         attachments.push(att);
 
-        // Load buffer from local file if available
-        const localPath = storageService.getLocalFilePath(att.storage_path);
-        if (localPath && fs.existsSync(localPath)) {
-          attachmentBuffers.set(att.id, fs.readFileSync(localPath));
+        // Load buffer from local file or Supabase
+        const buffer = await storageService.getFileBuffer(att.storage_path);
+        if (buffer) {
+          attachmentBuffers.set(att.id, buffer);
         }
       }
     }
@@ -185,9 +185,9 @@ export async function streamMessage(req: AuthenticatedRequest, res: Response): P
           });
           attachments.push(att);
 
-          const localPath = storageService.getLocalFilePath(att.storage_path);
-          if (localPath && fs.existsSync(localPath)) {
-            attachmentBuffers.set(att.id, fs.readFileSync(localPath));
+          const buffer = await storageService.getFileBuffer(att.storage_path);
+          if (buffer) {
+            attachmentBuffers.set(att.id, buffer);
           }
         }
       }

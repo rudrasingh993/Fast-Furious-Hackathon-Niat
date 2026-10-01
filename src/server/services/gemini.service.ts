@@ -340,6 +340,25 @@ Has attachments: ${hasAttachments}`,
 
     // Build GoogleGenAI request
     let userInstruction = SYSTEM_INSTRUCTION;
+
+    // Intercept image generation
+    const isImageGeneration = /^(?:generate|create|draw|imagine|make)(?:\s+an?)?\s+image\s+(?:of|about|where)?\s+/i.test(currentPrompt.trim());
+    if (isImageGeneration && this.isAvailable()) {
+      try {
+        const imageResult = await this.generateImage(currentPrompt);
+        if (imageResult) {
+          const mdImage = `\n![Generated Image](data:${imageResult.mimeType};base64,${imageResult.imageBase64})\n`;
+          const prefix = `Here is the generated image for: "${currentPrompt}"\n`;
+          onChunk(prefix);
+          onChunk(mdImage);
+          reasoningSummary.intent = 'Image Generation';
+          reasoningSummary.method = ['Detected image generation intent', 'Triggered imagen-3.0-generate-002 model'];
+          return { fullText: prefix + mdImage, sources, reasoningSummary };
+        }
+      } catch (e: any) {
+         console.warn("Failed to intercept image generation", e);
+      }
+    }
     if (userPreferences?.response_style) {
       userInstruction += `\nUser preferred response style: ${userPreferences.response_style}.`;
     }
