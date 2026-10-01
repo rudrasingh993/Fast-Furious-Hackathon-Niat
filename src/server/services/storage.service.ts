@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { db } from '../db/database.js';
 import { config } from '../config/env.js';
 
@@ -7,9 +8,22 @@ export class StorageService {
   private localUploadsDir: string;
 
   constructor() {
-    this.localUploadsDir = path.resolve(process.cwd(), 'uploads');
-    if (!fs.existsSync(this.localUploadsDir)) {
-      fs.mkdirSync(this.localUploadsDir, { recursive: true });
+    let uploadsDir = path.resolve(process.cwd(), 'uploads');
+    try {
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+      this.localUploadsDir = uploadsDir;
+    } catch {
+      uploadsDir = path.join(os.tmpdir(), 'multi_mind_uploads');
+      try {
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+      } catch (err) {
+        console.warn('Could not initialize local upload directory:', err);
+      }
+      this.localUploadsDir = uploadsDir;
     }
   }
 
@@ -50,10 +64,16 @@ export class StorageService {
     }
 
     // Local storage fallback
-    const targetDir = path.join(this.localUploadsDir, userId, convId, attachmentId);
-    fs.mkdirSync(targetDir, { recursive: true });
-    const localFilePath = path.join(targetDir, sanitizedFilename);
-    fs.writeFileSync(localFilePath, buffer);
+    try {
+      const targetDir = path.join(this.localUploadsDir, userId, convId, attachmentId);
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+      const localFilePath = path.join(targetDir, sanitizedFilename);
+      fs.writeFileSync(localFilePath, buffer);
+    } catch (saveErr) {
+      console.warn('Local file write fallback skipped or failed:', saveErr);
+    }
 
     const relativeUrl = `/api/uploads/${attachmentId}/download?file=${encodeURIComponent(sanitizedFilename)}`;
     return { storagePath, url: relativeUrl };
