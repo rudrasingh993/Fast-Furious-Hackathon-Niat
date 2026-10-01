@@ -6,9 +6,9 @@ dotenv.config();
 export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
-  appUrl: process.env.APP_URL || 'http://localhost:5173',
-  apiUrl: process.env.API_URL || 'http://localhost:3000',
-  frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  appUrl: process.env.APP_URL || 'https://multi-mind-ai-phi.vercel.app',
+  apiUrl: process.env.API_URL || 'https://multi-mind-ai-phi.vercel.app',
+  frontendUrl: process.env.FRONTEND_URL || 'https://multi-mind-ai-phi.vercel.app',
 
   jwt: {
     secret: process.env.JWT_SECRET || 'mosaic_ai_jwt_super_secret_dev_key_2026_change_in_production',

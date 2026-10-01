@@ -27,6 +27,8 @@ export function createApp() {
         if (
           origin === config.frontendUrl ||
           origin === config.appUrl ||
+          origin.includes('multi-mind-ai') ||
+          origin.includes('.vercel.app') ||
           origin.startsWith('http://localhost') ||
           origin.startsWith('http://127.0.0.1')
         ) {
