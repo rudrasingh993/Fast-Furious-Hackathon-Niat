@@ -29,6 +29,10 @@ import {
   Menu,
   X,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Reveal } from '../components/motion/Reveal';
+import { TextReveal } from '../components/motion/TextReveal';
+import { Magnetic } from '../components/motion/Magnetic';
 
 export const LandingPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'document' | 'voice' | 'research'>('chat');
@@ -179,42 +183,55 @@ export const LandingPage: React.FC = () => {
       {/* Hero Section */}
       <section className="pt-36 sm:pt-44 pb-20 px-6 max-w-6xl mx-auto flex flex-col items-center text-center relative z-10">
         {/* Eyebrow Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.12] text-xs font-mono tracking-wider text-neutral-300 mb-8 shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-          <span>THE FUTURE OF MULTIMODAL AI</span>
-        </div>
+        <Reveal delay={0.2} direction="down">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.12] text-xs font-mono tracking-wider text-neutral-300 mb-8 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            <span>THE FUTURE OF MULTIMODAL AI</span>
+          </div>
+        </Reveal>
 
         {/* Massive Editorial Headline */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-editorial font-semibold text-gradient-champagne tracking-tight leading-[0.98] max-w-5xl mb-6">
-          One Intelligent Platform.<br className="hidden sm:inline" />
-          Every Modality.
-        </h1>
+        <TextReveal delay={0.3}>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-editorial font-semibold text-gradient-champagne tracking-tight leading-[0.98] max-w-5xl mb-6">
+            One Intelligent Platform.<br className="hidden sm:inline" />
+            Every Modality.
+          </h1>
+        </TextReveal>
 
         {/* Short Description */}
-        <p className="text-sm sm:text-base md:text-lg text-brand-500 max-w-2xl mb-10 leading-relaxed font-normal">
-          Understand, create, and synthesize across text, vision, audio waveforms, video files, and deep web research through one unified, persistent AI workspace.
-        </p>
+        <Reveal delay={0.5}>
+          <p className="text-sm sm:text-base md:text-lg text-brand-500 max-w-2xl mb-10 leading-relaxed font-normal">
+            Understand, create, and synthesize across text, vision, audio waveforms, video files, and deep web research through one unified, persistent AI workspace.
+          </p>
+        </Reveal>
 
         {/* CTA Controls */}
-        <div className="flex flex-col sm:flex-row items-center gap-3.5 mb-20 w-full sm:w-auto">
-          <Link
-            to="/signup"
-            className="btn-primary-pill w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
-          >
-            <span>Get Started Free</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-          <Link
-            to="/app"
-            className="btn-secondary-pill w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-medium flex items-center justify-center gap-2"
-          >
-            <span>Explore Workspace</span>
-            <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
-          </Link>
-        </div>
+        <Reveal delay={0.6}>
+          <div className="flex flex-col sm:flex-row items-center gap-3.5 mb-20 w-full sm:w-auto">
+            <Magnetic>
+              <Link
+                to="/signup"
+                className="btn-primary-pill w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
+              >
+                <span>Get Started Free</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </Magnetic>
+            <Magnetic>
+              <Link
+                to="/app"
+                className="btn-secondary-pill w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-medium flex items-center justify-center gap-2"
+              >
+                <span>Explore Workspace</span>
+                <ChevronRight className="w-3.5 h-3.5 text-neutral-400" />
+              </Link>
+            </Magnetic>
+          </div>
+        </Reveal>
 
         {/* Hero Visual: Sophisticated AI Interface Preview (Inspired by Screenshot 2) */}
-        <div className="w-full rounded-[28px] card-glass p-3 sm:p-5 text-left relative overflow-hidden border border-white/[0.12] shadow-[0_30px_100px_rgba(0,0,0,0.8)]">
+        <Reveal delay={0.8} direction="up" className="w-full">
+          <div className="w-full rounded-[28px] card-glass p-3 sm:p-5 text-left relative overflow-hidden border border-white/[0.12] shadow-[0_30px_100px_rgba(0,0,0,0.8)]">
           {/* Top Window Bar */}
           <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/[0.08]">
             <div className="flex items-center gap-2">
@@ -417,193 +434,208 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
+        </Reveal>
       </section>
 
       {/* Trust & Model Compatibility Bar */}
       <section className="py-12 px-6 max-w-6xl mx-auto border-t border-white/[0.06] text-center relative z-10">
-        <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-6">
-          Architected for frontier multimodal research & enterprise intelligence
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-40 hover:opacity-75 transition-opacity text-xs font-semibold tracking-wider text-neutral-300">
-          <span>GEMINI 2.5 PRO</span>
-          <span>GEMINI FLASH</span>
-          <span>IMAGEN 3</span>
-          <span>SUPABASE POSTGRES</span>
-          <span>GOOGLE GROUNDING</span>
-        </div>
+        <Reveal delay={0.2}>
+          <p className="text-[11px] font-mono uppercase tracking-widest text-neutral-500 mb-6">
+            Architected for frontier multimodal research & enterprise intelligence
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-40 hover:opacity-75 transition-opacity text-xs font-semibold tracking-wider text-neutral-300">
+            <span>GEMINI 2.5 PRO</span>
+            <span>GEMINI FLASH</span>
+            <span>IMAGEN 3</span>
+            <span>SUPABASE POSTGRES</span>
+            <span>GOOGLE GROUNDING</span>
+          </div>
+        </Reveal>
       </section>
 
       {/* Bento Grid Features Section (Inspired by Reference Screenshot 3) */}
       <section id="features" className="py-24 sm:py-32 px-6 max-w-6xl mx-auto relative z-10">
-        <div className="max-w-2xl mb-16">
-          <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
-            Features & Capabilities
+        <Reveal delay={0.1}>
+          <div className="max-w-2xl mb-16">
+            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
+              Features & Capabilities
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
+              Unified Multimodal Intelligence
+            </h2>
+            <p className="text-sm text-brand-500 leading-relaxed">
+              Eliminate fragmented tools. Seamlessly correlate documents, spoken audio, visual charts, and autonomous research across a single cognitive canvas.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
-            Unified Multimodal Intelligence
-          </h2>
-          <p className="text-sm text-brand-500 leading-relaxed">
-            Eliminate fragmented tools. Seamlessly correlate documents, spoken audio, visual charts, and autonomous research across a single cognitive canvas.
-          </p>
-        </div>
+        </Reveal>
 
         {/* Editorial Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           {/* Card 1: Large Feature Card (7 cols) with Orbital Rings (Inspired by Screenshot 3!) */}
-          <div className="md:col-span-7 card-glass p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden group">
-            <div className="relative z-10">
-              <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
-                <Network className="w-5 h-5 text-neutral-200" />
+          <Reveal delay={0.2} className="md:col-span-7 h-full">
+            <div className="card-glass p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden group h-full">
+              <div className="relative z-10">
+                <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
+                  <Network className="w-5 h-5 text-neutral-200" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
+                  Autonomous Multimodal Engine
+                </h3>
+                <p className="text-xs sm:text-sm text-brand-500 max-w-md leading-relaxed">
+                  Tokens from images, voice notes, PDFs, code files, and live web searches share a unified embedding space. Ask complex questions across multiple inputs simultaneously.
+                </p>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
-                Autonomous Multimodal Engine
-              </h3>
-              <p className="text-xs sm:text-sm text-brand-500 max-w-md leading-relaxed">
-                Tokens from images, voice notes, PDFs, code files, and live web searches share a unified embedding space. Ask complex questions across multiple inputs simultaneously.
-              </p>
-            </div>
 
-            {/* Subtle orbital ring graphic behind (matching reference screenshot 3) */}
-            <div className="mt-10 sm:mt-16 relative h-40 flex items-center justify-center">
-              <div className="absolute w-64 h-64 rounded-full border border-white/[0.06] animate-[spin_40s_linear_infinite]" />
-              <div className="absolute w-44 h-44 rounded-full border border-white/[0.08]" />
-              <div className="absolute w-24 h-24 rounded-full border border-white/[0.12] bg-white/[0.02]" />
-              <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs shadow-[0_0_30px_rgba(255,255,255,0.4)] z-10">
-                <Brain className="w-5 h-5" />
-              </div>
-              {/* Orbiting nodes */}
-              <div className="absolute -top-1 left-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
-                <ImageIcon className="w-4 h-4" />
-              </div>
-              <div className="absolute bottom-2 right-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
-                <Mic className="w-4 h-4" />
-              </div>
-              <div className="absolute top-1/2 -right-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
-                <FileText className="w-4 h-4" />
-              </div>
-              <div className="absolute top-1/2 -left-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
-                <Compass className="w-4 h-4" />
+              {/* Subtle orbital ring graphic behind (matching reference screenshot 3) */}
+              <div className="mt-10 sm:mt-16 relative h-40 flex items-center justify-center">
+                <div className="absolute w-64 h-64 rounded-full border border-white/[0.06] animate-[spin_40s_linear_infinite]" />
+                <div className="absolute w-44 h-44 rounded-full border border-white/[0.08]" />
+                <div className="absolute w-24 h-24 rounded-full border border-white/[0.12] bg-white/[0.02]" />
+                <div className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-bold text-xs shadow-[0_0_30px_rgba(255,255,255,0.4)] z-10">
+                  <Brain className="w-5 h-5" />
+                </div>
+                {/* Orbiting nodes */}
+                <div className="absolute -top-1 left-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
+                  <ImageIcon className="w-4 h-4" />
+                </div>
+                <div className="absolute bottom-2 right-1/4 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
+                  <Mic className="w-4 h-4" />
+                </div>
+                <div className="absolute top-1/2 -right-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <div className="absolute top-1/2 -left-2 p-2 rounded-xl bg-surface-200 border border-white/10 text-white shadow-lg">
+                  <Compass className="w-4 h-4" />
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Card 2: Right Card (5 cols) - Deep Autonomous Research */}
-          <div className="md:col-span-5 card-glass p-7 sm:p-9 flex flex-col justify-between">
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
-                <Compass className="w-5 h-5 text-neutral-200" />
+          <Reveal delay={0.3} className="md:col-span-5 h-full">
+            <div className="card-glass p-7 sm:p-9 flex flex-col justify-between h-full">
+              <div>
+                <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
+                  <Compass className="w-5 h-5 text-neutral-200" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
+                  Multi-Round Deep Research
+                </h3>
+                <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
+                  Deconstructs open-ended queries into targeted search rounds. Evaluates claims, flags contradictions, and synthesizes structured reports with citations.
+                </p>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
-                Multi-Round Deep Research
-              </h3>
-              <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
-                Deconstructs open-ended queries into targeted search rounds. Evaluates claims, flags contradictions, and synthesizes structured reports with citations.
-              </p>
-            </div>
 
-            <div className="mt-8 p-4 rounded-2xl bg-black/40 border border-white/[0.08] space-y-2 text-xs">
-              <div className="text-[10px] font-mono text-neutral-400">RESEARCH PIPELINE</div>
-              <div className="flex items-center justify-between text-neutral-300">
-                <span>1. Deconstruct Objective</span>
-                <span className="text-accent-gold font-mono text-[10px]">DONE</span>
-              </div>
-              <div className="flex items-center justify-between text-neutral-300">
-                <span>2. Multi-Round Search</span>
-                <span className="text-accent-gold font-mono text-[10px]">20 SOURCES</span>
-              </div>
-              <div className="flex items-center justify-between text-neutral-300">
-                <span>3. Detect Contradictions</span>
-                <span className="text-accent-gold font-mono text-[10px]">CORROBORATED</span>
-              </div>
-              <div className="flex items-center justify-between text-neutral-300">
-                <span>4. Synthesize Markdown</span>
-                <span className="text-white font-mono text-[10px]">READY</span>
+              <div className="mt-8 p-4 rounded-2xl bg-black/40 border border-white/[0.08] space-y-2 text-xs">
+                <div className="text-[10px] font-mono text-neutral-400">RESEARCH PIPELINE</div>
+                <div className="flex items-center justify-between text-neutral-300">
+                  <span>1. Deconstruct Objective</span>
+                  <span className="text-accent-gold font-mono text-[10px]">DONE</span>
+                </div>
+                <div className="flex items-center justify-between text-neutral-300">
+                  <span>2. Multi-Round Search</span>
+                  <span className="text-accent-gold font-mono text-[10px]">20 SOURCES</span>
+                </div>
+                <div className="flex items-center justify-between text-neutral-300">
+                  <span>3. Detect Contradictions</span>
+                  <span className="text-accent-gold font-mono text-[10px]">CORROBORATED</span>
+                </div>
+                <div className="flex items-center justify-between text-neutral-300">
+                  <span>4. Synthesize Markdown</span>
+                  <span className="text-white font-mono text-[10px]">READY</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Card 3: Bottom Left Card (5 cols) - Large Metric Typography */}
-          <div className="md:col-span-5 card-glass p-7 sm:p-9 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
-                SCALE & PERFORMANCE
+          <Reveal delay={0.4} className="md:col-span-5 h-full">
+            <div className="card-glass p-7 sm:p-9 flex flex-col justify-between h-full">
+              <div>
+                <div className="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-2">
+                  SCALE & PERFORMANCE
+                </div>
+                <div className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight my-2">
+                  10M+
+                </div>
+                <div className="text-base font-semibold text-neutral-200 mb-1">
+                  AI Reasoning Requests
+                </div>
+                <p className="text-xs text-brand-500 leading-relaxed">
+                  Powering rigorous analysis across enterprise research, legal audits, academic papers, and software architecture.
+                </p>
               </div>
-              <div className="text-5xl sm:text-6xl font-extrabold text-white tracking-tight my-2">
-                10M+
-              </div>
-              <div className="text-base font-semibold text-neutral-200 mb-1">
-                AI Reasoning Requests
-              </div>
-              <p className="text-xs text-brand-500 leading-relaxed">
-                Powering rigorous analysis across enterprise research, legal audits, academic papers, and software architecture.
-              </p>
-            </div>
 
-            <div className="mt-6 flex items-center gap-3 pt-4 border-t border-white/[0.08] text-xs text-neutral-400">
-              <Shield className="w-4 h-4 text-accent-gold" />
-              <span>Full Supabase RLS isolation on every query</span>
+              <div className="mt-6 flex items-center gap-3 pt-4 border-t border-white/[0.08] text-xs text-neutral-400">
+                <Shield className="w-4 h-4 text-accent-gold" />
+                <span>Full Supabase RLS isolation on every query</span>
+              </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Card 4: Bottom Right Card (7 cols) - Supported Modalities Dock */}
-          <div className="md:col-span-7 card-glass p-7 sm:p-9 flex flex-col justify-between">
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
-                <Layers className="w-5 h-5 text-neutral-200" />
+          <Reveal delay={0.5} className="md:col-span-7 h-full">
+            <div className="card-glass p-7 sm:p-9 flex flex-col justify-between h-full">
+              <div>
+                <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white mb-6">
+                  <Layers className="w-5 h-5 text-neutral-200" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
+                  Every Modality. One Workspace.
+                </h3>
+                <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
+                  Native support for PDFs, DOCX, CSVs, browser audio recordings, diagrams, screenshots, and structured knowledge extraction.
+                </p>
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-2.5">
-                Every Modality. One Workspace.
-              </h3>
-              <p className="text-xs sm:text-sm text-brand-500 leading-relaxed">
-                Native support for PDFs, DOCX, CSVs, browser audio recordings, diagrams, screenshots, and structured knowledge extraction.
-              </p>
-            </div>
 
-            {/* Monochrome Dock of Modalities (Inspired by Screenshot 3 bottom dock) */}
-            <div className="mt-8 flex flex-wrap gap-2.5">
-              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
-                <FileText className="w-4 h-4 text-neutral-300" />
-                <span>PDF & Office Docs</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
-                <Mic className="w-4 h-4 text-neutral-300" />
-                <span>Voice & Audio Memos</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
-                <ImageIcon className="w-4 h-4 text-neutral-300" />
-                <span>Diagrams & Vision</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
-                <Globe className="w-4 h-4 text-neutral-300" />
-                <span>Google Search Grounding</span>
-              </div>
-              <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
-                <Database className="w-4 h-4 text-neutral-300" />
-                <span>Entity Knowledge Graph</span>
+              {/* Monochrome Dock of Modalities (Inspired by Screenshot 3 bottom dock) */}
+              <div className="mt-8 flex flex-wrap gap-2.5">
+                <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+                  <FileText className="w-4 h-4 text-neutral-300" />
+                  <span>PDF & Office Docs</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+                  <Mic className="w-4 h-4 text-neutral-300" />
+                  <span>Voice & Audio Memos</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+                  <ImageIcon className="w-4 h-4 text-neutral-300" />
+                  <span>Diagrams & Vision</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+                  <Globe className="w-4 h-4 text-neutral-300" />
+                  <span>Google Search Grounding</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-surface-200 border border-white/10 flex items-center gap-2 text-xs font-medium text-white hover:border-white/20 transition-colors">
+                  <Database className="w-4 h-4 text-neutral-300" />
+                  <span>Entity Knowledge Graph</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Multimodal Dataflow Section */}
       <section id="multimodal" className="py-24 px-6 max-w-6xl mx-auto border-t border-white/[0.06] relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
-            Tensor Pipeline
+        <Reveal delay={0.2} direction="up">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
+              Tensor Pipeline
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight mb-3">
+              How Multimodal Processing Works
+            </h2>
+            <p className="text-xs sm:text-sm text-brand-500">
+              Input diverse formats simultaneously. The core engine aligns multi-source tokens into unified reasoning.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight mb-3">
-            How Multimodal Processing Works
-          </h2>
-          <p className="text-xs sm:text-sm text-brand-500">
-            Input diverse formats simultaneously. The core engine aligns multi-source tokens into unified reasoning.
-          </p>
-        </div>
+        </Reveal>
 
         {/* Dataflow visualization */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {/* Inputs Column */}
-          <div className="space-y-3">
+          <Reveal delay={0.3} direction="right" className="space-y-3">
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-3">
               <FileText className="w-4 h-4 text-neutral-300" />
               <div className="text-xs">
@@ -625,25 +657,27 @@ export const LandingPage: React.FC = () => {
                 <div className="text-neutral-400 text-[11px]">MP3, WAV, Live Mic Recordings</div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Central AI Engine */}
-          <div className="card-glass p-8 text-center border-white/20 shadow-2xl relative my-4 md:my-0">
-            <div className="w-14 h-14 rounded-full bg-white text-black mx-auto flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(255,255,255,0.4)]">
-              <Brain className="w-7 h-7" />
+          <Reveal delay={0.5} direction="up">
+            <div className="card-glass p-8 text-center border-white/20 shadow-2xl relative my-4 md:my-0">
+              <div className="w-14 h-14 rounded-full bg-white text-black mx-auto flex items-center justify-center mb-4 shadow-[0_0_40px_rgba(255,255,255,0.4)]">
+                <Brain className="w-7 h-7" />
+              </div>
+              <h4 className="text-base font-bold text-white mb-1">Multi Mind Core</h4>
+              <p className="text-xs text-neutral-400 mb-4">
+                Gemini 2.5 Pro + Cross-Attention Alignment
+              </p>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white font-mono text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-gold animate-pulse" />
+                <span>Real-Time Fusion</span>
+              </div>
             </div>
-            <h4 className="text-base font-bold text-white mb-1">Multi Mind Core</h4>
-            <p className="text-xs text-neutral-400 mb-4">
-              Gemini 2.5 Pro + Cross-Attention Alignment
-            </p>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white font-mono text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-gold animate-pulse" />
-              <span>Real-Time Fusion</span>
-            </div>
-          </div>
+          </Reveal>
 
           {/* Output Column */}
-          <div className="space-y-3">
+          <Reveal delay={0.7} direction="left" className="space-y-3">
             <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-3">
               <CheckCircle2 className="w-4 h-4 text-accent-gold" />
               <div className="text-xs">
@@ -665,29 +699,37 @@ export const LandingPage: React.FC = () => {
                 <div className="text-neutral-400 text-[11px]">Persistent entity cards in DB</div>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Statistics Section (Editorial Numbers) */}
       <section className="py-20 px-6 max-w-6xl mx-auto border-t border-white/[0.06] relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">10M+</div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">AI Requests</div>
-          </div>
-          <div>
-            <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">120+</div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Formats Supported</div>
-          </div>
-          <div>
-            <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">99.9%</div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Platform Uptime</div>
-          </div>
-          <div>
-            <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">50+</div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Frontier Models</div>
-          </div>
+          <Reveal delay={0.1}>
+            <div>
+              <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">10M+</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">AI Requests</div>
+            </div>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <div>
+              <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">120+</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Formats Supported</div>
+            </div>
+          </Reveal>
+          <Reveal delay={0.3}>
+            <div>
+              <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">99.9%</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Platform Uptime</div>
+            </div>
+          </Reveal>
+          <Reveal delay={0.4}>
+            <div>
+              <div className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">50+</div>
+              <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mt-2">Frontier Models</div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -695,243 +737,261 @@ export const LandingPage: React.FC = () => {
       <section id="testimonials" className="py-24 sm:py-32 px-6 max-w-6xl mx-auto border-t border-white/[0.06] relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Title Column (Inspired by Screenshot 1) */}
-          <div className="lg:col-span-4 sticky top-28">
+          <Reveal className="lg:col-span-4 sticky top-28" direction="right" delay={0.2}>
             <h2 className="text-4xl sm:text-6xl font-editorial font-medium text-white tracking-tight leading-[1.0] mb-4">
-              What they<br />say about us
+              <TextReveal text={`What they\nsay about us`} />
             </h2>
             <p className="text-xs sm:text-sm text-brand-500 leading-relaxed max-w-xs">
               Researchers, engineers, and analysts share how Multi Mind AI transformed their multimodal knowledge synthesis.
             </p>
-          </div>
+          </Reveal>
 
           {/* Right Asymmetric Testimonial Cards (Inspired by Screenshot 1) */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Card 1 */}
-            <div className="card-glass p-6 sm:p-7 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
-                    SJ
+            <Reveal delay={0.3} className="h-full">
+              <div className="card-glass p-6 sm:p-7 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
+                      SJ
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Sarah Johnson</div>
+                      <div className="text-xs text-neutral-400">AI Research Lead</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">Sarah Johnson</div>
-                    <div className="text-xs text-neutral-400">AI Research Lead</div>
-                  </div>
+                  <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
+                    "Multi Mind AI has completely transformed how I analyze multi-source technical whitepapers. Dropping a 40-page PDF and an audio lecture note into one unified chat feels like magic."
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
-                  "Multi Mind AI has completely transformed how I analyze multi-source technical whitepapers. Dropping a 40-page PDF and an audio lecture note into one unified chat feels like magic."
-                </p>
               </div>
-            </div>
+            </Reveal>
 
             {/* Card 2 (Staggered offset) */}
-            <div className="card-glass p-6 sm:p-7 flex flex-col justify-between sm:translate-y-6">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
-                    MC
+            <Reveal delay={0.4} className="h-full sm:translate-y-6">
+              <div className="card-glass p-6 sm:p-7 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
+                      MC
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Michael Chen</div>
+                      <div className="text-xs text-neutral-400">Principal Systems Architect</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">Michael Chen</div>
-                    <div className="text-xs text-neutral-400">Principal Systems Architect</div>
-                  </div>
+                  <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
+                    "The transparent reasoning drawer and citation mapping give our engineering team total auditability. We can trace every single claim back to its primary source."
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
-                  "The transparent reasoning drawer and citation mapping give our engineering team total auditability. We can trace every single claim back to its primary source."
-                </p>
               </div>
-            </div>
+            </Reveal>
 
             {/* Card 3 */}
-            <div className="card-glass p-6 sm:p-7 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
-                    ED
+            <Reveal delay={0.5} className="h-full">
+              <div className="card-glass p-6 sm:p-7 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
+                      ED
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Emma Davis</div>
+                      <div className="text-xs text-neutral-400">Autonomous Technology Lead</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">Emma Davis</div>
-                    <div className="text-xs text-neutral-400">Autonomous Technology Lead</div>
-                  </div>
+                  <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
+                    "The autonomous deep research engine deconstructed our competitive intelligence questions into 4 orthogonal search angles and flagged contradictions instantly."
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
-                  "The autonomous deep research engine deconstructed our competitive intelligence questions into 4 orthogonal search angles and flagged contradictions instantly."
-                </p>
               </div>
-            </div>
+            </Reveal>
 
             {/* Card 4 (Staggered offset) */}
-            <div className="card-glass p-6 sm:p-7 flex flex-col justify-between sm:translate-y-6">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
-                    JW
+            <Reveal delay={0.6} className="h-full sm:translate-y-6">
+              <div className="card-glass p-6 sm:p-7 flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-10 h-10 rounded-full bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-sm text-white">
+                      JW
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">James Wilson</div>
+                      <div className="text-xs text-neutral-400">Bioinformatics Fellow</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">James Wilson</div>
-                    <div className="text-xs text-neutral-400">Bioinformatics Fellow</div>
-                  </div>
+                  <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
+                    "I finally have one workspace for vision diagnostics, audio transcriptions, and live web grounding. The model resilience and fast latency are unmatched."
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-brand-300 leading-relaxed">
-                  "I finally have one workspace for vision diagnostics, audio transcriptions, and live web grounding. The model resilience and fast latency are unmatched."
-                </p>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
       <section id="pricing" className="py-24 sm:py-32 px-6 max-w-6xl mx-auto border-t border-white/[0.06] relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
-            Plans & Access
+        <Reveal delay={0.1} direction="up">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
+              Plans & Access
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-3">
+              Transparent Pricing
+            </h2>
+            <p className="text-xs sm:text-sm text-brand-500">
+              Start free with full multimodal intelligence. Scale as your research operations expand.
+            </p>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-3">
-            Transparent Pricing
-          </h2>
-          <p className="text-xs sm:text-sm text-brand-500">
-            Start free with full multimodal intelligence. Scale as your research operations expand.
-          </p>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {/* Starter Plan */}
-          <div className="card-glass p-7 sm:p-8 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                Starter
+          <Reveal delay={0.2} direction="up" className="h-full">
+            <div className="card-glass p-7 sm:p-8 flex flex-col justify-between h-full">
+              <div>
+                <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">
+                  Starter
+                </div>
+                <div className="text-3xl font-bold text-white mb-2">$0</div>
+                <p className="text-xs text-neutral-400 mb-6">
+                  Perfect for personal research and exploring multimodal intelligence.
+                </p>
+                <div className="space-y-2.5 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>50 Multimodal queries / day</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Gemini 2.5 Flash core model</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>PDF, DOCX & Image upload</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Standard web search grounding</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-3xl font-bold text-white mb-2">$0</div>
-              <p className="text-xs text-neutral-400 mb-6">
-                Perfect for personal research and exploring multimodal intelligence.
-              </p>
-              <div className="space-y-2.5 text-xs text-neutral-300">
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>50 Multimodal queries / day</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Gemini 2.5 Flash core model</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>PDF, DOCX & Image upload</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Standard web search grounding</span>
-                </div>
-              </div>
-            </div>
 
-            <Link
-              to="/signup"
-              className="btn-secondary-pill w-full mt-8 py-2.5 text-center text-xs block"
-            >
-              Get Started Free
-            </Link>
-          </div>
+              <Link
+                to="/signup"
+                className="btn-secondary-pill w-full mt-8 py-2.5 text-center text-xs block"
+              >
+                Get Started Free
+              </Link>
+            </div>
+          </Reveal>
 
           {/* Pro Plan (Featured with subtle silver elevation) */}
-          <div className="card-glass p-7 sm:p-8 flex flex-col justify-between border-white/30 shadow-[0_20px_80px_rgba(255,255,255,0.08)] relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-white text-black font-mono text-[10px] font-bold tracking-wider uppercase">
-              Most Popular
-            </div>
+          <Reveal delay={0.3} direction="up" className="h-full">
+            <div className="card-glass p-7 sm:p-8 flex flex-col justify-between border-white/30 shadow-[0_20px_80px_rgba(255,255,255,0.08)] relative h-full">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-white text-black font-mono text-[10px] font-bold tracking-wider uppercase">
+                Most Popular
+              </div>
 
-            <div>
-              <div className="text-xs font-mono uppercase tracking-wider text-neutral-300 mb-1">
-                Professional
+              <div>
+                <div className="text-xs font-mono uppercase tracking-wider text-neutral-300 mb-1">
+                  Professional
+                </div>
+                <div className="text-3xl font-bold text-white mb-2">
+                  $29 <span className="text-xs font-normal text-neutral-400">/ month</span>
+                </div>
+                <p className="text-xs text-neutral-400 mb-6">
+                  For researchers, engineers, and analysts requiring frontier capabilities.
+                </p>
+                <div className="space-y-2.5 text-xs text-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Unlimited Multimodal queries</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Gemini 2.5 Pro priority inference</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Autonomous Deep Research engine</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Voice recordings & transcription</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Imagen 3 image generation</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-3xl font-bold text-white mb-2">
-                $29 <span className="text-xs font-normal text-neutral-400">/ month</span>
-              </div>
-              <p className="text-xs text-neutral-400 mb-6">
-                For researchers, engineers, and analysts requiring frontier capabilities.
-              </p>
-              <div className="space-y-2.5 text-xs text-neutral-200">
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Unlimited Multimodal queries</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Gemini 2.5 Pro priority inference</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Autonomous Deep Research engine</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Voice recordings & transcription</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Imagen 3 image generation</span>
-                </div>
-              </div>
-            </div>
 
-            <Link
-              to="/signup"
-              className="btn-primary-pill w-full mt-8 py-2.5 text-center text-xs block font-semibold"
-            >
-              Start Pro Trial
-            </Link>
-          </div>
+              <Link
+                to="/signup"
+                className="btn-primary-pill w-full mt-8 py-2.5 text-center text-xs block font-semibold"
+              >
+                Start Pro Trial
+              </Link>
+            </div>
+          </Reveal>
 
           {/* Enterprise Plan */}
-          <div className="card-glass p-7 sm:p-8 flex flex-col justify-between">
-            <div>
-              <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                Enterprise
+          <Reveal delay={0.4} direction="up" className="h-full">
+            <div className="card-glass p-7 sm:p-8 flex flex-col justify-between h-full">
+              <div>
+                <div className="text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">
+                  Enterprise
+                </div>
+                <div className="text-3xl font-bold text-white mb-2">Custom</div>
+                <p className="text-xs text-neutral-400 mb-6">
+                  Dedicated infrastructure, custom API quotas, and enterprise governance.
+                </p>
+                <div className="space-y-2.5 text-xs text-neutral-300">
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Custom context rate limits</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Dedicated VPC or on-prem deployment</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>Custom knowledge connectors</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-white" />
+                    <span>99.99% Enterprise SLA</span>
+                  </div>
+                </div>
               </div>
-              <div className="text-3xl font-bold text-white mb-2">Custom</div>
-              <p className="text-xs text-neutral-400 mb-6">
-                Dedicated infrastructure, custom API quotas, and enterprise governance.
-              </p>
-              <div className="space-y-2.5 text-xs text-neutral-300">
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Custom context rate limits</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Dedicated VPC or on-prem deployment</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>Custom knowledge connectors</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-3.5 h-3.5 text-white" />
-                  <span>99.99% Enterprise SLA</span>
-                </div>
-              </div>
-            </div>
 
-            <a
-              href="mailto:contact@multimind.ai"
-              className="btn-secondary-pill w-full mt-8 py-2.5 text-center text-xs block"
-            >
-              Contact Sales
-            </a>
-          </div>
+              <a
+                href="mailto:contact@multimind.ai"
+                className="btn-secondary-pill w-full mt-8 py-2.5 text-center text-xs block"
+              >
+                Contact Sales
+              </a>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section id="faq" className="py-24 px-6 max-w-4xl mx-auto border-t border-white/[0.06] relative z-10">
-        <div className="text-center mb-14">
-          <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
-            Answers & Clarity
+        <Reveal delay={0.1}>
+          <div className="text-center mb-14">
+            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-2">
+              Answers & Clarity
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight">
+              Frequently Asked Questions
+            </h2>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-editorial font-medium text-white tracking-tight">
-            Frequently Asked Questions
-          </h2>
-        </div>
+        </Reveal>
 
         <div className="divide-y divide-white/[0.08]">
           {faqs.map((faq, idx) => (
@@ -962,30 +1022,32 @@ export const LandingPage: React.FC = () => {
 
       {/* Bottom CTA Banner */}
       <section className="py-24 px-6 max-w-5xl mx-auto border-t border-white/[0.06] text-center relative z-10">
-        <div className="card-glass p-10 sm:p-14 border-white/20 shadow-2xl relative overflow-hidden">
-          <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
-          <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-4 relative z-10">
-            Start Synthesizing Intelligence Today
-          </h2>
-          <p className="text-xs sm:text-sm text-brand-500 max-w-lg mx-auto mb-8 relative z-10">
-            Join researchers and teams using Multi Mind AI to seamlessly bridge text, media, documents, and autonomous research.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
-            <Link
-              to="/signup"
-              className="btn-primary-pill px-8 py-3 text-xs sm:text-sm font-semibold flex items-center gap-2"
-            >
-              <span>Create Free Account</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              to="/app"
-              className="btn-secondary-pill px-6 py-3 text-xs sm:text-sm font-medium"
-            >
-              Open Live Demo
-            </Link>
+        <Reveal delay={0.2} direction="up">
+          <div className="card-glass p-10 sm:p-14 border-white/20 shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-radial-glow pointer-events-none" />
+            <h2 className="text-3xl sm:text-5xl font-editorial font-medium text-white tracking-tight mb-4 relative z-10">
+              Start Synthesizing Intelligence Today
+            </h2>
+            <p className="text-xs sm:text-sm text-brand-500 max-w-lg mx-auto mb-8 relative z-10">
+              Join researchers and teams using Multi Mind AI to seamlessly bridge text, media, documents, and autonomous research.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 relative z-10">
+              <Link
+                to="/signup"
+                className="btn-primary-pill px-8 py-3 text-xs sm:text-sm font-semibold flex items-center gap-2"
+              >
+                <span>Create Free Account</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                to="/app"
+                className="btn-secondary-pill px-6 py-3 text-xs sm:text-sm font-medium"
+              >
+                Open Live Demo
+              </Link>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Large Sophisticated Dark Footer */}
